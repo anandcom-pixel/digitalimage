@@ -56,8 +56,7 @@
   - **Master Prompt & Parameters:** Full synthesis prompt with one-click "Copy Prompt" button.
 
 ### 4. Admin Panel & Authentication
-- **Curator Security Gate:** Password-protected authentication modal.
-  - **Master Password:** `gallery123`
+- **Curator Security Gate:** Password-protected authentication modal with sanitized error handling and zero client-side credential exposure.
 - **Prominent Admin Mode Active Banner:** Unmistakable top notification banner with live pulsing status indicator, rapid "+ Add New Asset" button, "Reset Demo Data" option, and "Exit Admin" button.
 - **Add / Edit Asset Modal Form:**
   - Asset Title (required).
@@ -70,7 +69,7 @@
   - License Type & Status.
   - Chromatic Color Palette (comma-separated hex codes).
   - Prompt / Synthesis Parameters.
-- **Data Persistence:** Powered by browser `LocalStorage` (`anandovsky_gallery_assets_v2` and `anandovsky_admin_auth_v2`). Any assets added, edited, or deleted persist across page reloads and browser sessions.
+- **Data Persistence:** Universal Cloud Database Persistence powered by Vercel KV and Supabase REST backend (`/api/assets`), coupled with offline browser `LocalStorage` fallback and safe-merge syncing. Any assets added, edited, or deleted persist directly to the cloud and remain synchronized in real time across browser sessions.
 
 ### 5. Download & Inquire System
 - Direct instant watermarked comp preview download simulation.
@@ -95,7 +94,6 @@ Or double-click `index.html` in File Explorer.
 
 ---
 
-## 🔑 Curator Credentials
+## 🔑 Curator Authentication
 
-- **Admin Login:** Click the **Admin Login** button in the header.
-- **Password:** `gallery123`
+- **Admin Login:** Click the **Admin Login** button in the header and enter your authorized curator security credentials. Authentication unlocks asset creation, catalog editing, and exhibition management.

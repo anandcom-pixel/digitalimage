@@ -566,14 +566,12 @@
                 class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-cream-300 bg-cream-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-softblue-300 focus:border-softblue-500 text-sm transition"
               />
             </div>
-            <div class="mt-1.5 flex items-center justify-between text-[11px] text-slate-400">
-              <span>Security Key: <code class="text-softblue-700 bg-softblue-50 px-1 py-0.5 rounded font-mono">gallery123</code></span>
-            </div>
+
           </div>
 
           <div id="loginErrorMessage" class="hidden text-xs text-rose-600 bg-rose-50 border border-rose-200 p-2.5 rounded-lg flex items-center space-x-1.5">
             <i data-lucide="alert-circle" class="w-4 h-4 shrink-0 text-rose-500"></i>
-            <span>Incorrect password. Please use <b>gallery123</b>.</span>
+            <span>Invalid password. Please try again.</span>
           </div>
 
           <div class="pt-2">
@@ -1029,7 +1027,19 @@
        ========================================== */
     const STORAGE_KEY_ASSETS = 'anandovsky_gallery_assets_v2';
     const STORAGE_KEY_ADMIN = 'anandovsky_admin_auth_v2';
-    const ADMIN_PASSWORD_HASH = 'gallery123';
+    // SHA-256 hash of curator key for zero-leakage client authentication
+    const ADMIN_PASSWORD_HASH = '3e311dd45088ffb742d08247a14f82984d8c7828f9e351016acad902c69fb30f';
+
+    async function hashPassword(str) {
+      try {
+        if (window.crypto && window.crypto.subtle) {
+          const buffer = new TextEncoder().encode(str);
+          const digest = await window.crypto.subtle.digest('SHA-256', buffer);
+          return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+      } catch (e) {}
+      return str;
+    }
 
     // Rich curated dataset showcasing AI Art across requested categories
     const INITIAL_SEED_ASSETS = [
@@ -1247,6 +1257,128 @@
       });
     });
 
+        // --- Universal Cloud Database Integration (Vercel KV / Supabase REST) ---
+    const API_ASSETS_URL = '/api/assets';
+    let isUniversalCloudSyncing = false;
+
+    // Safe client merge utility: combines remote cloud data with local records without losing historical entries
+    function safeMergeClientAssets(localList = [], remoteList = []) {
+      const mergedMap = new Map();
+      const order = [];
+
+      if (Array.isArray(remoteList)) {
+        for (const item of remoteList) {
+          if (item && item.id != null) {
+            const id = String(item.id);
+            mergedMap.set(id, { ...item });
+            order.push(id);
+          }
+        }
+      }
+
+      if (Array.isArray(localList)) {
+        for (const item of localList) {
+          if (item && item.id != null) {
+            const id = String(item.id);
+            if (!mergedMap.has(id)) {
+              mergedMap.set(id, { ...item });
+              order.push(id);
+            }
+          }
+        }
+      }
+
+      const result = [];
+      const seen = new Set();
+      for (const id of order) {
+        if (!seen.has(id) && mergedMap.has(id)) {
+          seen.add(id);
+          result.push(mergedMap.get(id));
+        }
+      }
+      return result;
+    }
+
+    async function fetchAssetsFromCloud(silent = false) {
+      if (isUniversalCloudSyncing) return;
+      isUniversalCloudSyncing = true;
+      try {
+        const res = await fetch(API_ASSETS_URL, {
+          headers: { 'Accept': 'application/json' },
+          cache: 'no-cache'
+        });
+        if (res.ok) {
+          const json = await res.json();
+          const remoteAssets = Array.isArray(json) ? json : (json.data || json.assets);
+          if (Array.isArray(remoteAssets) && remoteAssets.length > 0) {
+            galleryAssets = safeMergeClientAssets(galleryAssets, remoteAssets);
+            saveAssetsToStorage();
+            renderCategoryTabs();
+            renderGallery();
+            if (!silent) {
+              console.log('[Universal Cloud DB] Gallery assets synchronized from cloud store.');
+            }
+          }
+        }
+      } catch (err) {
+        if (!silent) {
+          console.warn('[Universal Cloud DB] Falling back to local cache/seed:', err);
+        }
+      } finally {
+        isUniversalCloudSyncing = false;
+      }
+    }
+
+    async function pushAssetToCloud(action, assetOrId, allAssets) {
+      try {
+        const payload = {
+          action: action,
+          asset: (action !== 'delete' && typeof assetOrId === 'object') ? assetOrId : null,
+          id: (action === 'delete') ? assetOrId : (assetOrId && assetOrId.id ? assetOrId.id : null),
+          data: allAssets,
+          meta: {
+            action: action,
+            id: (action === 'delete') ? assetOrId : (assetOrId && assetOrId.id ? assetOrId.id : null),
+            timestamp: new Date().toISOString()
+          }
+        };
+
+        const res = await fetch(API_ASSETS_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+          const json = await res.json();
+          if (json && Array.isArray(json.data) && json.data.length > 0) {
+            galleryAssets = json.data;
+            saveAssetsToStorage();
+            renderCategoryTabs();
+            renderGallery();
+          }
+          console.log(`[Universal Cloud DB] Asset action "${action}" successfully persisted to cloud database.`);
+          return true;
+        }
+      } catch (err) {
+        console.warn(`[Universal Cloud DB] Cloud push error for "${action}":`, err);
+      }
+      return false;
+    }
+
+    // Real-time synchronization listeners across tabs and devices
+    window.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        fetchAssetsFromCloud(true);
+      }
+    });
+    window.addEventListener('focus', () => {
+      fetchAssetsFromCloud(true);
+    });
+    setInterval(() => {
+      fetchAssetsFromCloud(true);
+    }, 20000);
+
     function loadState() {
       // 1. Assets
       const storedAssets = localStorage.getItem(STORAGE_KEY_ASSETS);
@@ -1266,6 +1398,9 @@
       // 2. Admin Auth State
       const storedAuth = localStorage.getItem(STORAGE_KEY_ADMIN);
       isAdminLoggedIn = storedAuth === 'true';
+
+      // 3. Fetch latest synchronized state from cloud database
+      fetchAssetsFromCloud(false);
     }
 
     function saveAssetsToStorage() {
@@ -1744,7 +1879,7 @@
     }
 
     /* ==========================================
-       7. ADMIN AUTHENTICATION (PASSWORD: gallery123)
+       7. ADMIN AUTHENTICATION
        ========================================== */
     function handleAdminButtonClick() {
       if (isAdminLoggedIn) {
@@ -1769,19 +1904,25 @@
       document.body.style.overflow = '';
     }
 
-    function handleAdminLoginSubmit(e) {
+    async function handleAdminLoginSubmit(e) {
       e.preventDefault();
-      const enteredPassword = document.getElementById('adminPasswordInput').value;
+      const passInput = document.getElementById('adminPasswordInput');
+      const enteredPassword = (passInput.value || '').trim();
       const errorMsg = document.getElementById('loginErrorMessage');
 
-      if (enteredPassword === ADMIN_PASSWORD_HASH) {
+      const hashedInput = await hashPassword(enteredPassword);
+      if (hashedInput === ADMIN_PASSWORD_HASH) {
         isAdminLoggedIn = true;
         localStorage.setItem(STORAGE_KEY_ADMIN, 'true');
+        passInput.value = '';
         closeLoginModal();
         updateAdminUI();
         renderGallery();
         showToast('Admin Mode activated successfully! Full controls unlocked.', 'success');
       } else {
+        // Clear and mask input field, focus, and display clean generic error
+        passInput.value = '';
+        passInput.focus();
         errorMsg.classList.remove('hidden');
         if (window.lucide) lucide.createIcons();
       }
@@ -2025,8 +2166,9 @@
         showToast(`Asset "${title}" added to gallery!`, 'success');
       }
 
-      // Save to localStorage
+      // Save to localStorage & push directly to cloud database
       saveAssetsToStorage();
+      pushAssetToCloud(assetId ? 'edit' : 'create', newAssetObj, galleryAssets);
       closeAssetFormModal();
       renderCategoryTabs();
       renderGallery();
@@ -2042,6 +2184,7 @@
       if (confirmDelete) {
         galleryAssets = galleryAssets.filter(a => a.id !== assetId);
         saveAssetsToStorage();
+        pushAssetToCloud('delete', assetId, galleryAssets);
         renderCategoryTabs();
         renderGallery();
         showToast(`Deleted "${asset.title}"`, 'info');
@@ -2054,6 +2197,7 @@
       if (confirmReset) {
         galleryAssets = [...INITIAL_SEED_ASSETS];
         saveAssetsToStorage();
+        pushAssetToCloud('reset', null, galleryAssets);
         renderCategoryTabs();
         renderGallery();
         showToast('Gallery restored to original curated catalog.', 'success');

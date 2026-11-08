@@ -1,0 +1,10 @@
+{
+  "name": "digitalimage",
+  "version": "1.0.0",
+  "description": "Anandovsky Digital Asset Gallery",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "npx serve ."
+  }
+}
