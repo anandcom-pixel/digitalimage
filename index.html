@@ -1,0 +1,2157 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anandovsky Digital Asset Gallery | Curated AI Art & Digital Assets</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220%22%20%220%22%20%22100%22%20%22100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
+
+  <!-- Google Fonts: Plus Jakarta Sans & Outfit for modern luxury feel -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Tailwind Configuration for Custom Theme: Light Cream & Soft Blue -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            cream: {
+              50: '#FDFBF7',
+              100: '#FAF8F5',  /* Main cream background */
+              200: '#F3EFE6',  /* Soft warm cream surface */
+              300: '#E8E2D5',  /* Cream border */
+              400: '#D5CDBF',
+              500: '#B0A695',
+            },
+            softblue: {
+              50: '#F5F9FD',
+              100: '#EBF3FA',  /* Soft blue wash */
+              200: '#D4E6F6',  /* Badge & highlight blue */
+              300: '#B2D4F0',
+              400: '#72AEE5',
+              500: '#3B82F6',  /* Accent electric blue */
+              600: '#2563EB',
+              700: '#1D4ED8',
+              800: '#1E3A8A',  /* Deep elegant midnight */
+              900: '#0F1E3D',
+            },
+            slateText: {
+              light: '#64748B',
+              main: '#334155',
+              dark: '#0F172A',
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            display: ['"Outfit"', 'sans-serif'],
+            serifBrand: ['"Cinzel"', 'serif'],
+          },
+          boxShadow: {
+            'art': '0 10px 30px -10px rgba(30, 58, 138, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.02)',
+            'art-hover': '0 20px 35px -10px rgba(37, 99, 235, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+            'modal': '0 25px 60px -15px rgba(15, 30, 61, 0.25)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #F3EFE6;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #B2D4F0;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #72AEE5;
+    }
+
+    /* Gradient Backgrounds */
+    .bg-cream-radial {
+      background: radial-gradient(circle at 10% 20%, #F5F9FD 0%, #FAF8F5 45%, #F4EFE6 100%);
+    }
+
+    .glass-nav {
+      background: rgba(250, 248, 245, 0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(10px);
+    }
+
+    /* Aspect ratio container helper */
+    .art-aspect {
+      aspect-ratio: 4 / 3;
+    }
+
+    /* Pulse animation for admin */
+    @keyframes subtlePulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.85; transform: scale(1.02); }
+    }
+    .admin-pulse {
+      animation: subtlePulse 3s infinite ease-in-out;
+    }
+
+    /* Shimmer effect for image loading */
+    .shimmer {
+      background: linear-gradient(90deg, #f0ede6 25%, #f9f7f2 50%, #f0ede6 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.8s infinite;
+    }
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+  </style>
+</head>
+
+<body class="bg-cream-radial min-h-screen text-slateText-main font-sans antialiased flex flex-col selection:bg-softblue-200 selection:text-softblue-900">
+
+  <!-- ============================================================ -->
+  <!-- 0. ADMIN MODE STATUS BANNER (Dynamic - Shown when logged in) -->
+  <!-- ============================================================ -->
+  <div id="adminBanner" class="hidden bg-gradient-to-r from-softblue-900 via-softblue-800 to-indigo-900 text-white px-4 py-2.5 shadow-md border-b border-softblue-700/50 sticky top-0 z-50 transition-all">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 text-sm">
+      <div class="flex items-center space-x-2.5">
+        <span class="relative flex h-3 w-3">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+        </span>
+        <span class="font-display font-semibold tracking-wide uppercase text-xs text-softblue-200">Admin Mode Active</span>
+        <span class="hidden md:inline text-softblue-300/80">|</span>
+        <span class="hidden md:inline text-xs text-softblue-200">Full catalog management unlocked (LocalStorage Enabled)</span>
+      </div>
+
+      <div class="flex items-center space-x-2">
+        <button onclick="openAddAssetModal()" class="inline-flex items-center space-x-1.5 px-3 py-1 bg-white/10 hover:bg-white/20 text-white border border-white/25 rounded-md text-xs font-medium transition shadow-sm hover:scale-[1.02]">
+          <i data-lucide="plus-circle" class="w-3.5 h-3.5 text-softblue-200"></i>
+          <span>Add New Asset</span>
+        </button>
+        <button onclick="confirmResetCatalog()" title="Restore sample catalog" class="inline-flex items-center space-x-1.5 px-2.5 py-1 bg-white/5 hover:bg-white/15 text-softblue-200 rounded-md text-xs transition">
+          <i data-lucide="rotate-ccw" class="w-3 h-3"></i>
+          <span class="hidden sm:inline">Reset Demo Data</span>
+        </button>
+        <button onclick="adminLogout()" class="inline-flex items-center space-x-1.5 px-3 py-1 bg-rose-500/20 hover:bg-rose-500/30 text-rose-200 border border-rose-400/30 rounded-md text-xs font-medium transition">
+          <i data-lucide="log-out" class="w-3 h-3"></i>
+          <span>Exit Admin</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- 1. HEADER & PRIMARY NAVIGATION -->
+  <!-- ============================================================ -->
+  <header class="glass-nav border-b border-cream-300/80 sticky top-0 z-40 transition-all shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        
+        <!-- App Title & Branding -->
+        <a href="#gallery" class="group flex items-center space-x-3.5 focus:outline-none">
+          <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-softblue-600 via-softblue-500 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-softblue-500/20 group-hover:scale-105 transition-transform duration-300">
+            <i data-lucide="sparkles" class="w-6 h-6 text-white"></i>
+          </div>
+          <div>
+            <div class="flex items-center space-x-2">
+              <span class="font-serifBrand text-xl sm:text-2xl font-bold tracking-tight text-softblue-900 group-hover:text-softblue-700 transition">
+                Anandovsky
+              </span>
+              <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-softblue-100 text-softblue-700 border border-softblue-200">
+                Gallery
+              </span>
+            </div>
+            <p class="text-xs font-medium text-slate-500 tracking-wide">
+              Curated AI Art & Digital Assets
+            </p>
+          </div>
+        </a>
+
+        <!-- Search Bar (Header / Desktop) -->
+        <div class="hidden lg:block flex-1 max-w-md mx-8">
+          <div class="relative">
+            <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            <input 
+              type="text" 
+              id="globalSearchInput" 
+              oninput="handleSearchInput(this.value)"
+              placeholder="Search assets by title, tags, prompt, or model..."
+              class="w-full pl-10 pr-9 py-2 rounded-full text-xs sm:text-sm bg-white/90 border border-cream-300 focus:border-softblue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-softblue-200 transition shadow-sm placeholder:text-slate-400"
+            />
+            <button 
+              id="clearSearchBtn" 
+              onclick="clearSearch()" 
+              class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5">
+              <i data-lucide="x" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Header Actions: Quick Stats & Admin Button -->
+        <div class="flex items-center space-x-3">
+          <!-- Total asset counter badge -->
+          <div class="hidden sm:flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-cream-200/80 border border-cream-300 text-xs font-medium text-slate-600">
+            <i data-lucide="layers" class="w-3.5 h-3.5 text-softblue-600"></i>
+            <span id="assetCountBadge">10 Assets</span>
+          </div>
+
+          <!-- Admin Mode Toggle / Login Button -->
+          <button 
+            id="adminNavBtn"
+            onclick="handleAdminButtonClick()"
+            class="inline-flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition shadow-sm border border-softblue-300 bg-softblue-50 hover:bg-softblue-100 text-softblue-800 hover:border-softblue-400">
+            <i data-lucide="lock" class="w-4 h-4 text-softblue-600"></i>
+            <span id="adminNavBtnText">Admin Login</span>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Mobile Search Bar (< lg screens) -->
+      <div class="lg:hidden pb-3">
+        <div class="relative">
+          <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+          <input 
+            type="text" 
+            id="mobileSearchInput" 
+            oninput="handleSearchInput(this.value)"
+            placeholder="Search by title, tag, model..."
+            class="w-full pl-10 pr-9 py-2 rounded-full text-xs sm:text-sm bg-white/90 border border-cream-300 focus:border-softblue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-softblue-200 transition shadow-sm placeholder:text-slate-400"
+          />
+          <button 
+            id="mobileClearSearchBtn" 
+            onclick="clearSearch()" 
+            class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5">
+            <i data-lucide="x" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================================ -->
+  <!-- 2. HERO / SHOWCASE BANNER -->
+  <!-- ============================================================ -->
+  <section class="relative overflow-hidden border-b border-cream-300 bg-gradient-to-b from-softblue-50/70 via-cream-100 to-cream-200/50 py-10 sm:py-14">
+    <div class="absolute inset-0 pointer-events-none opacity-40">
+      <div class="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-softblue-200/50 blur-3xl"></div>
+      <div class="absolute top-1/2 right-0 w-80 h-80 rounded-full bg-amber-100/60 blur-3xl"></div>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center sm:text-left">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="max-w-2xl">
+          <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-softblue-100/80 border border-softblue-200 text-softblue-800 text-xs font-semibold mb-3">
+            <i data-lucide="wand-sparkles" class="w-3.5 h-3.5 text-softblue-600"></i>
+            <span>Premier AI Art & Digital Assets Marketplace</span>
+          </div>
+          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-softblue-900 tracking-tight leading-tight">
+            Curated Synthesis of <span class="text-transparent bg-clip-text bg-gradient-to-r from-softblue-700 via-softblue-600 to-indigo-600">Form, Algorithm & Light</span>
+          </h1>
+          <p class="mt-3 text-sm sm:text-base text-slate-600 leading-relaxed">
+            Explore high-resolution, commercial-ready digital masterpieces spanning stippling dotwork, surrealist abstractions, cinematic landscapes, and futuristic concept art.
+          </p>
+        </div>
+
+        <!-- Quick Metrics Pill Box -->
+        <div class="w-full sm:w-auto grid grid-cols-3 gap-3 p-3.5 rounded-2xl bg-white/80 border border-cream-300 shadow-art backdrop-blur-sm text-center">
+          <div class="px-3 py-2 border-r border-cream-200">
+            <div id="statTotalCount" class="text-xl sm:text-2xl font-bold font-display text-softblue-900">10</div>
+            <div class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Curations</div>
+          </div>
+          <div class="px-3 py-2 border-r border-cream-200">
+            <div id="statCategoryCount" class="text-xl sm:text-2xl font-bold font-display text-softblue-900">5</div>
+            <div class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Genres</div>
+          </div>
+          <div class="px-3 py-2">
+            <div class="text-xl sm:text-2xl font-bold font-display text-emerald-600">4K+</div>
+            <div class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">UHD Master</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 3. CATEGORY NAVIGATION & FILTER CONTROLS -->
+  <!-- ============================================================ -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-4 w-full">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-cream-300 pb-5">
+      
+      <!-- Category Filter Tabs -->
+      <div class="overflow-x-auto pb-2 md:pb-0 scrollbar-none">
+        <div id="categoryTabsContainer" class="flex items-center space-x-2 min-w-max">
+          <!-- Dynamically generated category tabs -->
+        </div>
+      </div>
+
+      <!-- Secondary Filters & Sort Controls -->
+      <div class="flex items-center space-x-3 self-end md:self-auto text-xs sm:text-sm">
+        
+        <!-- Status / License Filter -->
+        <div class="relative">
+          <select 
+            id="statusFilterSelect" 
+            onchange="handleStatusFilterChange(this.value)"
+            class="appearance-none pl-3 pr-8 py-2 rounded-xl bg-white border border-cream-300 text-slate-700 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-softblue-200 focus:border-softblue-500 shadow-sm cursor-pointer">
+            <option value="ALL">All License / Status</option>
+            <option value="Available for License">Available for License</option>
+            <option value="Print Ready">Print Ready</option>
+            <option value="Free Blueprint">Free Blueprint</option>
+          </select>
+          <i data-lucide="chevron-down" class="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
+        </div>
+
+        <!-- Sort Order -->
+        <div class="relative">
+          <select 
+            id="sortOrderSelect" 
+            onchange="handleSortChange(this.value)"
+            class="appearance-none pl-3 pr-8 py-2 rounded-xl bg-white border border-cream-300 text-slate-700 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-softblue-200 focus:border-softblue-500 shadow-sm cursor-pointer">
+            <option value="NEWEST">Newest First</option>
+            <option value="TITLE_AZ">Title (A-Z)</option>
+            <option value="CATEGORY">Category</option>
+          </select>
+          <i data-lucide="arrow-down-up" class="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Active Filter Indicators / Clear Pill -->
+    <div id="activeFilterPillContainer" class="hidden pt-3 flex items-center flex-wrap gap-2 text-xs">
+      <span class="text-slate-500 font-medium">Filtering by:</span>
+      <span id="activeFilterText" class="px-2.5 py-1 rounded-md bg-softblue-100 text-softblue-800 font-medium border border-softblue-200 flex items-center space-x-1">
+        <span id="activeFilterLabel"></span>
+        <button onclick="clearSearch()" class="hover:text-softblue-950 ml-1">
+          <i data-lucide="x" class="w-3 h-3"></i>
+        </button>
+      </span>
+      <button onclick="resetAllFilters()" class="text-slate-500 hover:text-slate-800 underline text-xs ml-2">
+        Reset all filters
+      </button>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 4. ASSET DISPLAY GRID & EMPTY STATE -->
+  <!-- ============================================================ -->
+  <main id="gallery" class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full">
+    
+    <!-- Cards Grid -->
+    <div id="assetGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 sm:gap-7">
+      <!-- Cards rendered dynamically via renderGallery() -->
+    </div>
+
+    <!-- Empty State (When no assets match search/filter) -->
+    <div id="emptyState" class="hidden flex-col items-center justify-center py-20 text-center">
+      <div class="w-16 h-16 rounded-2xl bg-softblue-100 text-softblue-600 flex items-center justify-center mb-4 border border-softblue-200">
+        <i data-lucide="image-off" class="w-8 h-8"></i>
+      </div>
+      <h3 class="font-display text-xl font-bold text-softblue-900">No Digital Assets Found</h3>
+      <p class="text-sm text-slate-500 max-w-md mt-1 mb-6">
+        No art pieces matched your active search or category filters. Try searching for different keywords or reset filters.
+      </p>
+      <button 
+        onclick="resetAllFilters()"
+        class="inline-flex items-center space-x-2 px-4 py-2 bg-softblue-600 hover:bg-softblue-700 text-white rounded-xl text-xs font-semibold shadow-sm transition">
+        <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+        <span>Clear Filters & Show All</span>
+      </button>
+    </div>
+
+  </main>
+
+  <!-- ============================================================ -->
+  <!-- 5. DETAILED METADATA MODAL (EXPANDED VIEW) -->
+  <!-- ============================================================ -->
+  <div id="detailModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <!-- Backdrop -->
+    <div class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm transition-opacity" onclick="closeDetailModal()"></div>
+
+    <div class="flex min-h-screen items-center justify-center p-3 sm:p-6">
+      <div class="relative w-full max-w-4xl rounded-2xl bg-white shadow-modal overflow-hidden border border-cream-300 transform transition-all flex flex-col md:flex-row max-h-[92vh]">
+        
+        <!-- Close Button (Top right) -->
+        <button 
+          onclick="closeDetailModal()"
+          class="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-slate-900/40 hover:bg-slate-900/60 text-white flex items-center justify-center transition backdrop-blur-sm">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+
+        <!-- Left Column: Large Image Preview -->
+        <div class="w-full md:w-1/2 bg-slate-950 flex items-center justify-center relative p-3 sm:p-4 min-h-[260px] md:min-h-[460px]">
+          <img 
+            id="detailModalImage" 
+            src="" 
+            alt="Asset Preview" 
+            class="max-h-[60vh] md:max-h-[75vh] w-auto max-w-full object-contain rounded-lg shadow-lg"
+          />
+          <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between text-xs text-white/80 bg-black/50 px-3 py-1.5 rounded-lg backdrop-blur-sm">
+            <span id="detailModalAspectRatio">Ratio: 16:9</span>
+            <a id="detailModalRawLink" href="#" target="_blank" class="hover:text-white inline-flex items-center space-x-1">
+              <span>View Source</span>
+              <i data-lucide="external-link" class="w-3 h-3"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Right Column: Metadata & Technical Specifications -->
+        <div class="w-full md:w-1/2 p-6 overflow-y-auto flex flex-col justify-between bg-cream-50">
+          <div>
+            <!-- Category & Status Badges -->
+            <div class="flex items-center justify-between gap-2 mb-2">
+              <span id="detailModalCategory" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-softblue-100 text-softblue-800 border border-softblue-200">
+                Category
+              </span>
+              <span id="detailModalStatus" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                Available for License
+              </span>
+            </div>
+
+            <!-- Title -->
+            <h2 id="detailModalTitle" class="text-xl sm:text-2xl font-display font-bold text-softblue-950 leading-snug">
+              Asset Title
+            </h2>
+
+            <!-- Descriptions -->
+            <p id="detailModalDescription" class="mt-3 text-sm text-slate-600 leading-relaxed">
+              Full description goes here...
+            </p>
+
+            <hr class="my-4 border-cream-300">
+
+            <!-- Technical AI Specifications -->
+            <div class="space-y-3">
+              <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center space-x-1.5">
+                <i data-lucide="cpu" class="w-3.5 h-3.5 text-softblue-600"></i>
+                <span>Generation Specifications</span>
+              </h4>
+
+              <div class="grid grid-cols-2 gap-2.5 text-xs">
+                <div class="p-2.5 rounded-lg bg-white border border-cream-300 shadow-sm">
+                  <span class="text-slate-400 block text-[10px] uppercase font-semibold">AI Model / Engine</span>
+                  <span id="detailModalModel" class="font-medium text-slate-800 mt-0.5 block">Midjourney v6.1</span>
+                </div>
+                <div class="p-2.5 rounded-lg bg-white border border-cream-300 shadow-sm">
+                  <span class="text-slate-400 block text-[10px] uppercase font-semibold">Native Resolution</span>
+                  <span id="detailModalResolution" class="font-medium text-slate-800 mt-0.5 block">3840 × 2160 (UHD)</span>
+                </div>
+                <div class="p-2.5 rounded-lg bg-white border border-cream-300 shadow-sm">
+                  <span class="text-slate-400 block text-[10px] uppercase font-semibold">License Format</span>
+                  <span id="detailModalLicense" class="font-medium text-slate-800 mt-0.5 block">Extended Commercial</span>
+                </div>
+                <div class="p-2.5 rounded-lg bg-white border border-cream-300 shadow-sm">
+                  <span class="text-slate-400 block text-[10px] uppercase font-semibold">Creation Date</span>
+                  <span id="detailModalDate" class="font-medium text-slate-800 mt-0.5 block">Nov 2026</span>
+                </div>
+              </div>
+
+              <!-- Color Palette Swatches -->
+              <div class="p-2.5 rounded-lg bg-white border border-cream-300 shadow-sm">
+                <span class="text-slate-400 block text-[10px] uppercase font-semibold mb-1.5">Chromatic Palette</span>
+                <div id="detailModalPaletteContainer" class="flex items-center space-x-2">
+                  <!-- Swatches inserted dynamically -->
+                </div>
+              </div>
+
+              <!-- Prompt Snippet with Copy Option -->
+              <div class="p-2.5 rounded-lg bg-white border border-cream-300 shadow-sm">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-slate-400 text-[10px] uppercase font-semibold">Master Prompt / Seed</span>
+                  <button onclick="copyPromptToClipboard()" class="text-[11px] text-softblue-600 hover:text-softblue-800 inline-flex items-center space-x-1 font-medium">
+                    <i data-lucide="copy" class="w-3 h-3"></i>
+                    <span id="copyPromptBtnText">Copy Prompt</span>
+                  </button>
+                </div>
+                <p id="detailModalPrompt" class="text-xs font-mono text-slate-600 bg-cream-100 p-2 rounded border border-cream-200 line-clamp-3">
+                  Prompt text...
+                </p>
+              </div>
+
+              <!-- Tags -->
+              <div>
+                <span class="text-slate-400 block text-[10px] uppercase font-semibold mb-1">Tags</span>
+                <div id="detailModalTags" class="flex flex-wrap gap-1.5">
+                  <!-- Tag pills -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Modal Action Buttons (Bottom) -->
+          <div class="mt-6 pt-4 border-t border-cream-300 flex items-center justify-between gap-3">
+            <button 
+              id="detailModalInquireBtn"
+              onclick="openInquireModalForCurrentAsset()"
+              class="flex-1 py-2.5 px-4 rounded-xl bg-softblue-600 hover:bg-softblue-700 text-white font-semibold text-xs sm:text-sm shadow-sm transition flex items-center justify-center space-x-2">
+              <i data-lucide="download" class="w-4 h-4"></i>
+              <span>Download / Inquire Asset</span>
+            </button>
+
+            <!-- Admin Edit Button in Modal (if logged in) -->
+            <button 
+              id="detailModalAdminEditBtn"
+              onclick="openEditFromDetailModal()"
+              class="hidden py-2.5 px-3 rounded-xl bg-white border border-softblue-300 hover:bg-softblue-50 text-softblue-700 font-medium text-xs transition items-center space-x-1.5">
+              <i data-lucide="edit-3" class="w-4 h-4"></i>
+              <span>Edit</span>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- 6. ADMIN LOGIN / AUTHENTICATION PASSWORD MODAL -->
+  <!-- ============================================================ -->
+  <div id="loginModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="login-title" role="dialog" aria-modal="true">
+    <div class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm transition-opacity" onclick="closeLoginModal()"></div>
+
+    <div class="flex min-h-screen items-center justify-center p-4">
+      <div class="relative w-full max-w-md rounded-2xl bg-white p-6 shadow-modal border border-cream-300 transform transition-all text-center">
+        
+        <button 
+          onclick="closeLoginModal()"
+          class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-1">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+
+        <div class="w-12 h-12 rounded-2xl bg-softblue-100 text-softblue-700 mx-auto flex items-center justify-center mb-4 border border-softblue-200">
+          <i data-lucide="shield-check" class="w-6 h-6"></i>
+        </div>
+
+        <h3 class="text-xl font-display font-bold text-softblue-950">Curator Admin Authentication</h3>
+        <p class="text-xs text-slate-500 mt-1 mb-6">
+          Enter your curator security credentials to unlock asset creation, live updates, and catalog modification.
+        </p>
+
+        <form onsubmit="handleAdminLoginSubmit(event)" class="space-y-4 text-left">
+          <div>
+            <label for="adminPasswordInput" class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
+              Admin Master Password
+            </label>
+            <div class="relative">
+              <i data-lucide="key-round" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+              <input 
+                type="password" 
+                id="adminPasswordInput" 
+                required 
+                placeholder="Enter password..."
+                autocomplete="current-password"
+                class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-cream-300 bg-cream-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-softblue-300 focus:border-softblue-500 text-sm transition"
+              />
+            </div>
+            <div class="mt-1.5 flex items-center justify-between text-[11px] text-slate-400">
+              <span>Security Key: <code class="text-softblue-700 bg-softblue-50 px-1 py-0.5 rounded font-mono">gallery123</code></span>
+            </div>
+          </div>
+
+          <div id="loginErrorMessage" class="hidden text-xs text-rose-600 bg-rose-50 border border-rose-200 p-2.5 rounded-lg flex items-center space-x-1.5">
+            <i data-lucide="alert-circle" class="w-4 h-4 shrink-0 text-rose-500"></i>
+            <span>Incorrect password. Please use <b>gallery123</b>.</span>
+          </div>
+
+          <div class="pt-2">
+            <button 
+              type="submit" 
+              class="w-full py-2.5 px-4 rounded-xl bg-softblue-700 hover:bg-softblue-800 text-white font-semibold text-sm shadow-md transition flex items-center justify-center space-x-2">
+              <i data-lucide="unlock" class="w-4 h-4"></i>
+              <span>Authenticate & Enter Admin Mode</span>
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- 7. ADD / EDIT ASSET MODAL FORM -->
+  <!-- ============================================================ -->
+  <div id="assetFormModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="form-modal-title" role="dialog" aria-modal="true">
+    <div class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm transition-opacity" onclick="closeAssetFormModal()"></div>
+
+    <div class="flex min-h-screen items-center justify-center p-3 sm:p-6">
+      <div class="relative w-full max-w-2xl rounded-2xl bg-white shadow-modal border border-cream-300 transform transition-all p-6 sm:p-8 max-h-[92vh] overflow-y-auto">
+        
+        <button 
+          onclick="closeAssetFormModal()"
+          class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-1">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+
+        <div class="flex items-center space-x-3 mb-6">
+          <div id="formModalIconBox" class="w-10 h-10 rounded-xl bg-softblue-100 text-softblue-700 flex items-center justify-center">
+            <i data-lucide="file-plus" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 id="formModalTitle" class="text-xl font-display font-bold text-softblue-950">Add New Digital Asset</h3>
+            <p class="text-xs text-slate-500">Provide image assets and generation metadata to publish to the gallery.</p>
+          </div>
+        </div>
+
+        <form id="assetUpsertForm" onsubmit="handleAssetFormSubmit(event)" class="space-y-4">
+          <input type="hidden" id="formAssetId" value="" />
+
+          <!-- Asset Title -->
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
+              Asset Title <span class="text-rose-500">*</span>
+            </label>
+            <input 
+              type="text" 
+              id="formTitle" 
+              required 
+              placeholder="e.g. Celestial Stippling of the Obsidian Monolith"
+              class="w-full px-3.5 py-2 rounded-xl border border-cream-300 focus:outline-none focus:ring-2 focus:ring-softblue-200 focus:border-softblue-500 text-sm"
+            />
+          </div>
+
+          <!-- Image URL & Live Preview / Local File Upload -->
+          <div class="p-3.5 rounded-xl bg-cream-50 border border-cream-300 space-y-3">
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700">
+              Image Source (Direct URL or Upload Image) <span class="text-rose-500">*</span>
+            </label>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <span class="text-[11px] text-slate-500 block mb-1">Option A: Image Web URL</span>
+                <input 
+                  type="url" 
+                  id="formImageUrl" 
+                  oninput="handleImageUrlInput(this.value)"
+                  placeholder="https://images.unsplash.com/..."
+                  class="w-full px-3 py-1.5 rounded-lg border border-cream-300 text-xs focus:ring-1 focus:ring-softblue-500"
+                />
+              </div>
+
+              <div>
+                <span class="text-[11px] text-slate-500 block mb-1">Option B: Upload Local File</span>
+                <input 
+                  type="file" 
+                  id="formImageFileInput" 
+                  accept="image/*"
+                  onchange="handleImageFileUpload(event)"
+                  class="w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-softblue-100 file:text-softblue-700 hover:file:bg-softblue-200 cursor-pointer"
+                />
+              </div>
+            </div>
+
+            <!-- Image Live Preview Box -->
+            <div id="imagePreviewContainer" class="flex items-center space-x-3 pt-1">
+              <div class="w-20 h-16 rounded-lg bg-cream-200 border border-cream-300 overflow-hidden flex items-center justify-center shrink-0">
+                <img id="formImagePreview" src="" alt="Preview" class="w-full h-full object-cover hidden" />
+                <span id="formImagePlaceholderText" class="text-[10px] text-slate-400 text-center px-1">No Image</span>
+              </div>
+              <span class="text-xs text-slate-500">Live preview of selected artwork thumbnail.</span>
+            </div>
+          </div>
+
+          <!-- Category Selection -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
+                Category <span class="text-rose-500">*</span>
+              </label>
+              <select 
+                id="formCategorySelect" 
+                onchange="handleFormCategoryChange(this.value)"
+                required
+                class="w-full px-3 py-2 rounded-xl border border-cream-300 text-sm focus:outline-none focus:ring-2 focus:ring-softblue-200">
+                <option value="Pointillism & Stippling">Pointillism & Stippling</option>
+                <option value="Abstract">Abstract</option>
+                <option value="Landscapes">Landscapes</option>
+                <option value="Portraits">Portraits</option>
+                <option value="Concept Art">Concept Art</option>
+                <option value="CUSTOM">+ Add New Custom Category...</option>
+              </select>
+            </div>
+
+            <!-- Custom Category input (appears if CUSTOM is selected) -->
+            <div id="customCategoryGroup" class="hidden">
+              <label class="block text-xs font-semibold uppercase tracking-wider text-softblue-800 mb-1">
+                New Category Name <span class="text-rose-500">*</span>
+              </label>
+              <input 
+                type="text" 
+                id="formCustomCategory" 
+                placeholder="e.g. Cyberpunk Synthwave"
+                class="w-full px-3 py-2 rounded-xl border border-softblue-300 bg-softblue-50 text-sm focus:ring-2 focus:ring-softblue-200"
+              />
+            </div>
+
+            <!-- Price / Status -->
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
+                License Status / Availability
+              </label>
+              <select 
+                id="formStatus" 
+                class="w-full px-3 py-2 rounded-xl border border-cream-300 text-sm focus:outline-none focus:ring-2 focus:ring-softblue-200">
+                <option value="Available for License">Available for License</option>
+                <option value="Print Ready">Print Ready</option>
+                <option value="Free Blueprint">Free Blueprint</option>
+                <option value="Exclusive Reserve">Exclusive Reserve</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Short Description -->
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
+              Short Description (Card Snippet) <span class="text-rose-500">*</span>
+            </label>
+            <input 
+              type="text" 
+              id="formShortDesc" 
+              required
+              maxlength="150"
+              placeholder="Brief summary displayed on the card..."
+              class="w-full px-3.5 py-2 rounded-xl border border-cream-300 text-sm focus:ring-2 focus:ring-softblue-200"
+            />
+          </div>
+
+          <!-- Full Description -->
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
+              Full Description & Artistic Notes
+            </label>
+            <textarea 
+              id="formFullDesc" 
+              rows="3"
+              placeholder="In-depth conceptual breakdown, artistic influences, and notes on color and technique..."
+              class="w-full px-3.5 py-2 rounded-xl border border-cream-300 text-sm focus:ring-2 focus:ring-softblue-200"></textarea>
+          </div>
+
+          <!-- Tags -->
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
+              Tags (comma separated)
+            </label>
+            <input 
+              type="text" 
+              id="formTags" 
+              placeholder="stippling, pointillism, dots, monochrome, ink"
+              class="w-full px-3.5 py-2 rounded-xl border border-cream-300 text-sm focus:ring-2 focus:ring-softblue-200"
+            />
+            <span class="text-[11px] text-slate-400">Pills will be rendered and clickable for rapid filtering.</span>
+          </div>
+
+          <!-- Technical Details Grid -->
+          <div class="border-t border-cream-300 pt-4">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3 flex items-center space-x-1.5">
+              <i data-lucide="sliders" class="w-3.5 h-3.5 text-softblue-600"></i>
+              <span>Technical Synthesis Parameters</span>
+            </h4>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              <div>
+                <label class="block font-medium text-slate-600 mb-1">AI Model / Generator</label>
+                <input 
+                  type="text" 
+                  id="formModel" 
+                  placeholder="Midjourney v6.1 / Flux.1 Dev / SDXL"
+                  class="w-full px-3 py-1.5 rounded-lg border border-cream-300 focus:ring-1 focus:ring-softblue-400"
+                />
+              </div>
+
+              <div>
+                <label class="block font-medium text-slate-600 mb-1">Resolution / Dimensions</label>
+                <input 
+                  type="text" 
+                  id="formResolution" 
+                  placeholder="4096 × 4096 px (1:1)"
+                  class="w-full px-3 py-1.5 rounded-lg border border-cream-300 focus:ring-1 focus:ring-softblue-400"
+                />
+              </div>
+
+              <div>
+                <label class="block font-medium text-slate-600 mb-1">License Type</label>
+                <input 
+                  type="text" 
+                  id="formLicense" 
+                  placeholder="Extended Commercial / CC-BY 4.0"
+                  class="w-full px-3 py-1.5 rounded-lg border border-cream-300 focus:ring-1 focus:ring-softblue-400"
+                />
+              </div>
+
+              <div>
+                <label class="block font-medium text-slate-600 mb-1">Color Palette (Hex codes, comma separated)</label>
+                <input 
+                  type="text" 
+                  id="formPalette" 
+                  placeholder="#0F172A, #38BDF8, #E2E8F0, #F59E0B"
+                  class="w-full px-3 py-1.5 rounded-lg border border-cream-300 focus:ring-1 focus:ring-softblue-400"
+                />
+              </div>
+            </div>
+
+            <div class="mt-3">
+              <label class="block text-xs font-medium text-slate-600 mb-1">Prompt / Synthesis Parameters</label>
+              <textarea 
+                id="formPrompt" 
+                rows="2"
+                placeholder="Full generation prompt, negative prompt, aspect ratio flags, weights..."
+                class="w-full px-3 py-1.5 rounded-lg border border-cream-300 text-xs font-mono focus:ring-1 focus:ring-softblue-400"></textarea>
+            </div>
+          </div>
+
+          <!-- Form Submit & Cancel -->
+          <div class="pt-4 border-t border-cream-300 flex items-center justify-end space-x-3">
+            <button 
+              type="button" 
+              onclick="closeAssetFormModal()" 
+              class="px-4 py-2 rounded-xl border border-cream-300 hover:bg-cream-100 text-slate-600 text-xs font-semibold transition">
+              Cancel
+            </button>
+            <button 
+              type="submit" 
+              class="px-5 py-2 rounded-xl bg-softblue-600 hover:bg-softblue-700 text-white text-xs font-semibold shadow-md transition flex items-center space-x-1.5">
+              <i data-lucide="check" class="w-4 h-4"></i>
+              <span id="formSubmitBtnText">Save Asset</span>
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- 8. DOWNLOAD / INQUIRE MODAL -->
+  <!-- ============================================================ -->
+  <div id="inquireModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="inquire-title" role="dialog" aria-modal="true">
+    <div class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm transition-opacity" onclick="closeInquireModal()"></div>
+
+    <div class="flex min-h-screen items-center justify-center p-4">
+      <div class="relative w-full max-w-lg rounded-2xl bg-white p-6 shadow-modal border border-cream-300 transform transition-all">
+        
+        <button 
+          onclick="closeInquireModal()"
+          class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-1">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+
+        <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-700 mx-auto flex items-center justify-center mb-3">
+          <i data-lucide="download-cloud" class="w-6 h-6"></i>
+        </div>
+
+        <div class="text-center mb-5">
+          <h3 class="text-xl font-display font-bold text-softblue-950">Asset Access & Licensing</h3>
+          <p id="inquireModalAssetTitle" class="text-xs text-softblue-700 font-semibold mt-1">Asset: Loading...</p>
+        </div>
+
+        <!-- Download direct sample or Inquire for High-Res -->
+        <div class="space-y-4">
+          <div class="p-3.5 rounded-xl bg-softblue-50 border border-softblue-200">
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="text-xs font-bold text-softblue-900 block">Instant Sample Preview Download</span>
+                <span class="text-[11px] text-slate-500">Watermarked web comp file (JPG / WebP)</span>
+              </div>
+              <button 
+                onclick="triggerDirectDownload()"
+                class="px-3 py-1.5 rounded-lg bg-softblue-600 hover:bg-softblue-700 text-white text-xs font-semibold transition flex items-center space-x-1 shadow-sm">
+                <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                <span>Download</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="relative flex py-1 items-center">
+            <div class="flex-grow border-t border-cream-300"></div>
+            <span class="flex-shrink mx-3 text-slate-400 text-xs font-medium uppercase tracking-wider">or submit commercial inquiry</span>
+            <div class="flex-grow border-t border-cream-300"></div>
+          </div>
+
+          <!-- Inquiry Form -->
+          <form onsubmit="handleInquirySubmit(event)" class="space-y-3 text-left">
+            <div>
+              <label class="block text-[11px] font-semibold uppercase tracking-wider text-slate-600 mb-1">Your Full Name</label>
+              <input type="text" required placeholder="e.g. Jane Doe" class="w-full px-3 py-2 rounded-lg border border-cream-300 text-xs focus:ring-1 focus:ring-softblue-500" />
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-semibold uppercase tracking-wider text-slate-600 mb-1">Corporate or Personal Email</label>
+              <input type="email" required placeholder="jane@company.com" class="w-full px-3 py-2 rounded-lg border border-cream-300 text-xs focus:ring-1 focus:ring-softblue-500" />
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-semibold uppercase tracking-wider text-slate-600 mb-1">Usage Scope</label>
+              <select class="w-full px-3 py-2 rounded-lg border border-cream-300 text-xs focus:ring-1 focus:ring-softblue-500">
+                <option>Commercial Advertising / Brand Campaign</option>
+                <option>Fine Art Print / Gallery Exhibition</option>
+                <option>Game & Film Concept Production</option>
+                <option>Editorial / Book Cover Publication</option>
+                <option>Personal Collection / NFT Blueprint</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-semibold uppercase tracking-wider text-slate-600 mb-1">Custom Notes / Inquiries</label>
+              <textarea rows="2" placeholder="Tell us about your timeline and specific resolution or prompt tailoring needs..." class="w-full px-3 py-2 rounded-lg border border-cream-300 text-xs focus:ring-1 focus:ring-softblue-500"></textarea>
+            </div>
+
+            <button 
+              type="submit" 
+              class="w-full py-2.5 rounded-xl bg-softblue-900 hover:bg-softblue-950 text-white font-semibold text-xs shadow transition flex items-center justify-center space-x-1.5 mt-2">
+              <i data-lucide="send" class="w-3.5 h-3.5"></i>
+              <span>Send Curator Inquiry</span>
+            </button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- 9. TOAST NOTIFICATION CONTAINER -->
+  <!-- ============================================================ -->
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+  <!-- ============================================================ -->
+  <!-- 10. PROFESSIONAL FOOTER -->
+  <!-- ============================================================ -->
+  <footer class="mt-auto border-t border-cream-300 bg-white/95">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+        
+        <!-- Column 1: Brand & Philosophy -->
+        <div class="md:col-span-2 space-y-3">
+          <div class="flex items-center space-x-2.5">
+            <div class="w-8 h-8 rounded-lg bg-softblue-600 flex items-center justify-center text-white">
+              <i data-lucide="sparkles" class="w-4 h-4"></i>
+            </div>
+            <span class="font-serifBrand text-lg font-bold text-softblue-950">Anandovsky Gallery</span>
+          </div>
+          <p class="text-xs text-slate-500 max-w-md leading-relaxed">
+            A state-of-the-art catalog celebrating algorithmic aesthetics, fine-point stippling, and hyper-detailed visual synthesis. Every asset is cataloged with complete cryptographic prompts and master parameters.
+          </p>
+          <div class="flex items-center space-x-4 pt-1 text-slate-400 text-xs">
+            <span class="flex items-center space-x-1">
+              <i data-lucide="shield" class="w-3.5 h-3.5 text-softblue-600"></i>
+              <span>Verified AI Lineage</span>
+            </span>
+            <span class="flex items-center space-x-1">
+              <i data-lucide="database" class="w-3.5 h-3.5 text-softblue-600"></i>
+              <span>Client State Storage</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Column 2: Categories -->
+        <div>
+          <h5 class="text-xs font-bold uppercase tracking-wider text-slate-800 mb-3">Curated Genres</h5>
+          <ul class="space-y-2 text-xs text-slate-500">
+            <li><a href="javascript:void(0)" onclick="filterByCategory('Pointillism & Stippling')" class="hover:text-softblue-600 transition">Pointillism & Stippling</a></li>
+            <li><a href="javascript:void(0)" onclick="filterByCategory('Abstract')" class="hover:text-softblue-600 transition">Abstract Synthesis</a></li>
+            <li><a href="javascript:void(0)" onclick="filterByCategory('Landscapes')" class="hover:text-softblue-600 transition">Cinematic Landscapes</a></li>
+            <li><a href="javascript:void(0)" onclick="filterByCategory('Portraits')" class="hover:text-softblue-600 transition">Hyper-real Portraits</a></li>
+            <li><a href="javascript:void(0)" onclick="filterByCategory('Concept Art')" class="hover:text-softblue-600 transition">Futurist Concept Art</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 3: Curator & QA Attribution -->
+        <div>
+          <h5 class="text-xs font-bold uppercase tracking-wider text-slate-800 mb-3">Project Provenance</h5>
+          <div class="p-3.5 rounded-xl bg-cream-100 border border-cream-300 text-xs space-y-2">
+            <div>
+              <span class="text-[10px] uppercase font-semibold text-slate-400 block">Lead Architect & Creator</span>
+              <span class="font-bold text-softblue-900">ANAND MOHANDAS</span>
+            </div>
+            <div class="pt-1 border-t border-cream-200">
+              <span class="text-[10px] uppercase font-semibold text-slate-400 block">Quality Assurance & Review</span>
+              <span class="font-semibold text-slate-700">Sreegovind &amp; Gayathri</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom Bar -->
+      <div class="pt-6 border-t border-cream-200 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+        <p>
+          &copy; <span id="currentYear"></span> <b>Anandovsky Digital Asset Gallery</b>. All rights reserved.
+        </p>
+
+        <!-- Prominent attribution specified in user prompt -->
+        <div class="px-3.5 py-1.5 rounded-full bg-softblue-50 border border-softblue-200 text-softblue-900 font-medium text-[11px] text-center">
+          Created by <span class="font-bold text-softblue-950">ANAND MOHANDAS</span> &nbsp;|&nbsp; Quality Assurance: <span class="font-semibold">Sreegovind &amp; Gayathri</span>
+        </div>
+
+        <div class="flex items-center space-x-4">
+          <a href="javascript:void(0)" onclick="showToast('Commercial Terms: Standard multi-seat commercial license with full prompt provenance.', 'info')" class="hover:text-slate-800 transition">Terms</a>
+          <a href="javascript:void(0)" onclick="showToast('Privacy Policy: All state is securely persisted locally on your device.', 'info')" class="hover:text-slate-800 transition">Privacy</a>
+          <a href="javascript:void(0)" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="hover:text-softblue-600 font-medium transition inline-flex items-center space-x-1">
+            <span>Back to top</span>
+            <i data-lucide="arrow-up" class="w-3.5 h-3.5"></i>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- ============================================================ -->
+  <!-- JAVASCRIPT APPLICATION LOGIC & STATE PERSISTENCE -->
+  <!-- ============================================================ -->
+  <script>
+    /* ==========================================
+       1. INITIAL SEED DATA & CONSTANTS
+       ========================================== */
+    const STORAGE_KEY_ASSETS = 'anandovsky_gallery_assets_v2';
+    const STORAGE_KEY_ADMIN = 'anandovsky_admin_auth_v2';
+    const ADMIN_PASSWORD_HASH = 'gallery123';
+
+    // Rich curated dataset showcasing AI Art across requested categories
+    const INITIAL_SEED_ASSETS = [
+      {
+        id: 'art-001',
+        title: 'Stippled Constellations of Kyoto',
+        category: 'Pointillism & Stippling',
+        shortDesc: 'A serene Japanese pagoda enveloped in millions of hand-calculated ink dots forming celestial star clusters.',
+        fullDesc: 'A masterclass in modern digital pointillism, combining classical George Seurat techniques with Japanese Edo woodblock compositions. The celestial nebula is composed entirely of micro-stippled point coordinates with varied ink densities.',
+        imageUrl: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1200&q=80',
+        tags: ['pointillism', 'stippling', 'kyoto', 'celestial', 'dotwork', 'woodblock'],
+        model: 'Midjourney v6.1 (Niji Stipple Profile)',
+        prompt: 'Traditional wooden pagoda in Kyoto, millions of fine stippling dots, George Seurat pointillist technique, starry cosmic indigo night sky, gold dust particle accents, crisp micro details --ar 16:9 --stylize 700 --v 6.1',
+        resolution: '3840 × 2160 (4K UHD)',
+        aspectRatio: '16:9',
+        date: '2026-10-14',
+        license: 'Extended Commercial License',
+        status: 'Available for License',
+        palette: ['#0B132B', '#1C2541', '#475569', '#E2D4B7', '#F8FAFC']
+      },
+      {
+        id: 'art-002',
+        title: 'Voxel Botanica & Micro-Dots',
+        category: 'Pointillism & Stippling',
+        shortDesc: 'A macro botanical study rendered through stippled pollen particles and organic dot structures.',
+        fullDesc: 'Explores the botanical morphology of exotic flora through high-frequency stippling. The color graduation relies solely on optical color mixing of miniature dot clusters.',
+        imageUrl: 'https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&w=1200&q=80',
+        tags: ['botanical', 'stippling', 'flora', 'macro', 'optical-mixing', 'organic'],
+        model: 'Flux.1 Dev (Fine-Tuned Macro Dot)',
+        prompt: 'Extreme close up of rare botanical orchid petals, intricate monochrome stippling with emerald and gold accents, stipple shading, botanical scientific etching --ar 1:1',
+        resolution: '3072 × 3072 (1:1 Square)',
+        aspectRatio: '1:1',
+        date: '2026-10-20',
+        license: 'Fine Art Print License',
+        status: 'Print Ready',
+        palette: ['#064E3B', '#047857', '#10B981', '#FDE047', '#ECFDF5']
+      },
+      {
+        id: 'art-003',
+        title: 'Chromatic Fluidity No. 7',
+        category: 'Abstract',
+        shortDesc: 'Swirling ribbons of liquid chrome and refractive neon pigments suspended in zero gravity.',
+        fullDesc: 'Simulating complex multi-viscosity fluid dynamics with subsurface scattering. Spectral chromatic dispersion radiates across the glossy curves, creating a hypnotic sense of movement.',
+        imageUrl: 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=1200&q=80',
+        tags: ['abstract', 'chromatic', 'liquid-chrome', 'fluid-art', 'spectral', '3d-render'],
+        model: 'Midjourney v6.1 (Subsurface Diffusion)',
+        prompt: 'Abstract liquid chrome fluid art with vibrant neon magenta and cyan iridescent swirls, volumetric caustics, cinematic studio lighting, Octane render 8k --ar 16:9',
+        resolution: '4096 × 2304 (4K DCI)',
+        aspectRatio: '16:9',
+        date: '2026-11-01',
+        license: 'Worldwide Commercial',
+        status: 'Available for License',
+        palette: ['#3A0CA3', '#4361EE', '#4CC9F0', '#F72585', '#7209B7']
+      },
+      {
+        id: 'art-004',
+        title: 'Quantum Lattice Reverie',
+        category: 'Abstract',
+        shortDesc: 'A holographic geometric prism lattice pulsating with mathematical fractals and laser refractions.',
+        fullDesc: 'An exploration of multidimensional geometry where intersecting planes refract light into crystalline spectrums. Built on recursive generative math sequences.',
+        imageUrl: 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=1200&q=80',
+        tags: ['abstract', 'lattice', 'fractal', 'holographic', 'prism', 'geometric'],
+        model: 'Stable Diffusion XL (SDXL Turbo)',
+        prompt: 'Futuristic prism lattice, sacred geometry, iridescent refraction, glowing quantum grid, transparent glass facets, ray tracing --ar 1:1',
+        resolution: '3840 × 3840 (1:1)',
+        aspectRatio: '1:1',
+        date: '2026-10-28',
+        license: 'Creative Commons (CC BY 4.0)',
+        status: 'Free Blueprint',
+        palette: ['#0F172A', '#38BDF8', '#818CF8', '#C084FC', '#F472B6']
+      },
+      {
+        id: 'art-005',
+        title: 'Ethereal Solitude: Nordic Fjords',
+        category: 'Landscapes',
+        shortDesc: 'Atmospheric twilight over icy Scandinavian fjords with auroral reflections dancing on still glacial waters.',
+        fullDesc: 'Captures the serene grandeur of untouched Nordic wilderness at dusk. The interplay between warm wooden hut illumination and cold glacial blue creates sublime visual tension.',
+        imageUrl: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80',
+        tags: ['landscapes', 'nordic', 'fjords', 'aurora', 'cinematic', 'twilight'],
+        model: 'Midjourney v6.1 (Photorealism Pipeline)',
+        prompt: 'Breathtaking Nordic fjord at twilight, mirrored glacial waters, distant emerald aurora borealis, tiny warm cabin light on the shore, 70mm anamorphic lens --ar 16:9',
+        resolution: '5120 × 2880 (5K Master)',
+        aspectRatio: '16:9',
+        date: '2026-10-18',
+        license: 'Fine Art Limited Edition',
+        status: 'Print Ready',
+        palette: ['#0F172A', '#1E293B', '#3B82F6', '#06B6D4', '#E2E8F0']
+      },
+      {
+        id: 'art-006',
+        title: 'Cyber-Oasis Dune 2099',
+        category: 'Landscapes',
+        shortDesc: 'Sweeping desert dunes sheltering a glowing terraformed biodome sanctuary under a twin-moon sky.',
+        fullDesc: 'A futuristic landscape synthesis envisioning post-planetary habitations. Fine wind-sculpted sand ripples meet high-tensile glass geodesic structures glowing in the dusk.',
+        imageUrl: 'https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=1200&q=80',
+        tags: ['landscapes', 'sci-fi', 'desert', 'dunes', 'oasis', 'biodome'],
+        model: 'Flux.1 Pro (Landscape Synthesis)',
+        prompt: 'Vast golden sand dunes at sunset, giant illuminated holographic geodesic biosphere dome in the distance, two crescent moons in indigo sky, hyper detailed --ar 16:9',
+        resolution: '4096 × 2304 (16:9)',
+        aspectRatio: '16:9',
+        date: '2026-11-03',
+        license: 'Extended Commercial License',
+        status: 'Available for License',
+        palette: ['#BC6C25', '#DDA15E', '#283618', '#606C38', '#FEFAE0']
+      },
+      {
+        id: 'art-007',
+        title: 'Solaris Empress in Obsidian & Gold',
+        category: 'Portraits',
+        shortDesc: 'Regal cybernetic portrait featuring kintsugi gold filigree, obsidian headpiece, and piercing gaze.',
+        fullDesc: 'Merging traditional Japanese lacquer art and kintsugi philosophy with cybernetic royalty. Gold leaf cracks trace porcelain-like facial contours with photographic skin texture.',
+        imageUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1200&q=80',
+        tags: ['portraits', 'kintsugi', 'gold-leaf', 'obsidian', 'cybernetic', 'editorial'],
+        model: 'Midjourney v6.1 (Studio Editorial)',
+        prompt: 'Portrait of royal empress with glossy obsidian crown, delicate gold kintsugi cracks on cheekbones, golden amber eyes, dramatic chiaroscuro studio lighting, Vogue editorial --ar 3:4',
+        resolution: '3072 × 4096 (3:4 High-Res)',
+        aspectRatio: '3:4',
+        date: '2026-10-25',
+        license: 'Master Fine Art License',
+        status: 'Available for License',
+        palette: ['#18181B', '#D97706', '#F59E0B', '#FEF3C7', '#451A03']
+      },
+      {
+        id: 'art-008',
+        title: 'Neon Renaissance Cyber-Muse',
+        category: 'Portraits',
+        shortDesc: 'A classical oil-painting aesthetic interwoven with subtle bioluminescent fiber optics.',
+        fullDesc: 'Inspired by Caravaggio and Da Vinci lighting models, this portrait juxtaposes heavy velvet textures with ultra-fine fiber optic threads woven directly into hair locks.',
+        imageUrl: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1200&q=80',
+        tags: ['portraits', 'renaissance', 'oil-painting', 'cyber-muse', 'fiber-optics', 'chiaroscuro'],
+        model: 'Flux.1 Dev (Classic Realism)',
+        prompt: 'Renaissance oil painting of thoughtful muse, subtle glowing neon violet threads in dark curly hair, rich oil glaze texture, chiaroscuro lighting, masterwork --ar 3:4',
+        resolution: '3000 × 4000 (3:4)',
+        aspectRatio: '3:4',
+        date: '2026-11-04',
+        license: 'Print Ready License',
+        status: 'Print Ready',
+        palette: ['#312E81', '#4F46E5', '#A855F7', '#FBBF24', '#FAF5FF']
+      },
+      {
+        id: 'art-009',
+        title: 'Aero-Spire Metropolis 2140',
+        category: 'Concept Art',
+        shortDesc: 'Kilometer-tall cloud cities connected by magnetic suspension bridges and sky gardens.',
+        fullDesc: 'A production-level architectural concept study exploring vertical ecology and aerodynamic skyline design in the year 2140. Includes solar envelope simulations.',
+        imageUrl: 'https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=1200&q=80',
+        tags: ['concept-art', 'metropolis', 'futuristic', 'solarpunk', 'architecture', 'aerospire'],
+        model: 'DALL-E 3 (Architectural Matte)',
+        prompt: 'Futuristic aerospire metropolis rising above fluffy white clouds, magnetic monorails crossing between spires, lush sky gardens, clean solar glass architecture, golden morning light --ar 16:9',
+        resolution: '3840 × 2160 (16:9)',
+        aspectRatio: '16:9',
+        date: '2026-10-30',
+        license: 'Film & Game Production License',
+        status: 'Available for License',
+        palette: ['#0F172A', '#0284C7', '#38BDF8', '#F8FAFC', '#F59E0B']
+      },
+      {
+        id: 'art-010',
+        title: 'Subterranean Bioluminescent Sanctum',
+        category: 'Concept Art',
+        shortDesc: 'An underground crystal cavern illuminated by glowing flora, waterfalls, and ancient petroglyphs.',
+        fullDesc: 'Worldbuilding concept art for an ancient underground biome. The subterranean river carries bioluminescent algae illuminating crystalline stalactites and mystical ruins.',
+        imageUrl: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1200&q=80',
+        tags: ['concept-art', 'bioluminescent', 'cavern', 'underground', 'crystals', 'fantasy'],
+        model: 'Midjourney v6.1 (Worldbuilder)',
+        prompt: 'Giant underground cave cathedral, cascading glowing emerald waterfalls, bioluminescent fungi and crystals, turquoise subterranean lake, cinematic depth of field --ar 16:9',
+        resolution: '4096 × 2304 (16:9)',
+        aspectRatio: '16:9',
+        date: '2026-11-06',
+        license: 'Creative Commons (CC BY-SA 4.0)',
+        status: 'Free Blueprint',
+        palette: ['#064E3B', '#059669', '#34D399', '#6EE7B7', '#A7F3D0']
+      }
+    ];
+
+    /* ==========================================
+       2. APPLICATION STATE
+       ========================================== */
+    let galleryAssets = [];
+    let isAdminLoggedIn = false;
+    let selectedCategory = 'ALL';
+    let searchQuery = '';
+    let selectedStatus = 'ALL';
+    let currentSort = 'NEWEST';
+    let activeModalAsset = null;
+
+    /* ==========================================
+       3. INITIALIZATION & LIFECYCLE
+       ========================================== */
+    document.addEventListener('DOMContentLoaded', () => {
+      // Set current year in footer
+      document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+      // Load state from LocalStorage
+      loadState();
+
+      // Initial Render
+      renderCategoryTabs();
+      renderGallery();
+      updateAdminUI();
+
+      // Refresh Lucide Icons
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+
+      // Keyboard ESC listener to close modals
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closeDetailModal();
+          closeLoginModal();
+          closeAssetFormModal();
+          closeInquireModal();
+        }
+      });
+    });
+
+    function loadState() {
+      // 1. Assets
+      const storedAssets = localStorage.getItem(STORAGE_KEY_ASSETS);
+      if (storedAssets) {
+        try {
+          galleryAssets = JSON.parse(storedAssets);
+        } catch (e) {
+          console.error('Failed to parse stored assets, resetting to seed data.', e);
+          galleryAssets = [...INITIAL_SEED_ASSETS];
+          saveAssetsToStorage();
+        }
+      } else {
+        galleryAssets = [...INITIAL_SEED_ASSETS];
+        saveAssetsToStorage();
+      }
+
+      // 2. Admin Auth State
+      const storedAuth = localStorage.getItem(STORAGE_KEY_ADMIN);
+      isAdminLoggedIn = storedAuth === 'true';
+    }
+
+    function saveAssetsToStorage() {
+      localStorage.setItem(STORAGE_KEY_ASSETS, JSON.stringify(galleryAssets));
+      updateMetricCounts();
+    }
+
+    function updateMetricCounts() {
+      const totalCount = galleryAssets.length;
+      const categories = new Set(galleryAssets.map(a => a.category));
+      
+      const statTotal = document.getElementById('statTotalCount');
+      const statCat = document.getElementById('statCategoryCount');
+      const badgeTotal = document.getElementById('assetCountBadge');
+
+      if (statTotal) statTotal.textContent = totalCount;
+      if (statCat) statCat.textContent = categories.size;
+      if (badgeTotal) badgeTotal.textContent = `${totalCount} Assets`;
+    }
+
+    /* ==========================================
+       4. CATEGORY TABS & FILTERING
+       ========================================== */
+    function getCategoriesList() {
+      const basePresets = [
+        'All Assets',
+        'Pointillism & Stippling',
+        'Abstract',
+        'Landscapes',
+        'Portraits',
+        'Concept Art'
+      ];
+      // Gather any additional custom categories added by user
+      const customCats = [];
+      galleryAssets.forEach(item => {
+        if (item.category && !basePresets.includes(item.category) && !customCats.includes(item.category)) {
+          customCats.push(item.category);
+        }
+      });
+      return [...basePresets, ...customCats];
+    }
+
+    function renderCategoryTabs() {
+      const container = document.getElementById('categoryTabsContainer');
+      if (!container) return;
+
+      const categories = getCategoriesList();
+      container.innerHTML = categories.map(cat => {
+        const isAll = cat === 'All Assets';
+        const filterVal = isAll ? 'ALL' : cat;
+        const isActive = selectedCategory === filterVal;
+
+        // Compute count in this category
+        const count = isAll 
+          ? galleryAssets.length 
+          : galleryAssets.filter(a => a.category.toLowerCase() === cat.toLowerCase()).length;
+
+        const activeClasses = isActive
+          ? 'bg-softblue-600 text-white shadow-sm border-softblue-600'
+          : 'bg-white hover:bg-cream-100 text-slate-700 border-cream-300 hover:border-softblue-300';
+
+        const badgeClasses = isActive
+          ? 'bg-softblue-700 text-softblue-100'
+          : 'bg-cream-200 text-slate-600';
+
+        return `
+          <button 
+            onclick="filterByCategory('${filterVal}')"
+            class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition border flex items-center space-x-2 ${activeClasses}">
+            <span>${cat}</span>
+            <span class="text-[11px] px-1.5 py-0.5 rounded-full ${badgeClasses}">${count}</span>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function filterByCategory(category) {
+      selectedCategory = category;
+      renderCategoryTabs();
+      renderGallery();
+      updateFilterPillIndicators();
+    }
+
+    function handleSearchInput(query) {
+      searchQuery = query.trim().toLowerCase();
+      
+      // Sync both desktop and mobile search inputs
+      const globalInput = document.getElementById('globalSearchInput');
+      const mobileInput = document.getElementById('mobileSearchInput');
+      const clearBtn = document.getElementById('clearSearchBtn');
+      const mobileClearBtn = document.getElementById('mobileClearSearchBtn');
+
+      if (globalInput && globalInput.value !== query) globalInput.value = query;
+      if (mobileInput && mobileInput.value !== query) mobileInput.value = query;
+
+      if (clearBtn) clearBtn.classList.toggle('hidden', !query);
+      if (mobileClearBtn) mobileClearBtn.classList.toggle('hidden', !query);
+
+      renderGallery();
+      updateFilterPillIndicators();
+    }
+
+    function clearSearch() {
+      searchQuery = '';
+      const globalInput = document.getElementById('globalSearchInput');
+      const mobileInput = document.getElementById('mobileSearchInput');
+      const clearBtn = document.getElementById('clearSearchBtn');
+      const mobileClearBtn = document.getElementById('mobileClearSearchBtn');
+
+      if (globalInput) globalInput.value = '';
+      if (mobileInput) mobileInput.value = '';
+      if (clearBtn) clearBtn.classList.add('hidden');
+      if (mobileClearBtn) mobileClearBtn.classList.add('hidden');
+
+      renderGallery();
+      updateFilterPillIndicators();
+    }
+
+    function handleStatusFilterChange(val) {
+      selectedStatus = val;
+      renderGallery();
+      updateFilterPillIndicators();
+    }
+
+    function handleSortChange(val) {
+      currentSort = val;
+      renderGallery();
+    }
+
+    function filterByTag(tag) {
+      searchQuery = tag.toLowerCase();
+      const globalInput = document.getElementById('globalSearchInput');
+      const mobileInput = document.getElementById('mobileSearchInput');
+      if (globalInput) globalInput.value = tag;
+      if (mobileInput) mobileInput.value = tag;
+      
+      renderGallery();
+      updateFilterPillIndicators();
+
+      // Scroll smoothly to gallery
+      const galleryEl = document.getElementById('gallery');
+      if (galleryEl) {
+        galleryEl.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    function resetAllFilters() {
+      selectedCategory = 'ALL';
+      searchQuery = '';
+      selectedStatus = 'ALL';
+      currentSort = 'NEWEST';
+
+      const statusSelect = document.getElementById('statusFilterSelect');
+      if (statusSelect) statusSelect.value = 'ALL';
+
+      const sortSelect = document.getElementById('sortOrderSelect');
+      if (sortSelect) sortSelect.value = 'NEWEST';
+
+      clearSearch();
+      renderCategoryTabs();
+      renderGallery();
+      updateFilterPillIndicators();
+      showToast('Filters have been reset', 'info');
+    }
+
+    function updateFilterPillIndicators() {
+      const container = document.getElementById('activeFilterPillContainer');
+      const label = document.getElementById('activeFilterLabel');
+      if (!container || !label) return;
+
+      const activeCriteria = [];
+      if (selectedCategory !== 'ALL') activeCriteria.push(`Category: ${selectedCategory}`);
+      if (searchQuery) activeCriteria.push(`Search: "${searchQuery}"`);
+      if (selectedStatus !== 'ALL') activeCriteria.push(`Status: ${selectedStatus}`);
+
+      if (activeCriteria.length > 0) {
+        container.classList.remove('hidden');
+        label.textContent = activeCriteria.join(' • ');
+      } else {
+        container.classList.add('hidden');
+      }
+    }
+
+    /* ==========================================
+       5. GALLERY CARD RENDERING
+       ========================================== */
+    function renderGallery() {
+      const grid = document.getElementById('assetGrid');
+      const emptyState = document.getElementById('emptyState');
+      if (!grid) return;
+
+      // Filter assets
+      let filtered = galleryAssets.filter(asset => {
+        // Category check
+        const matchesCat = (selectedCategory === 'ALL') || 
+          (asset.category.toLowerCase() === selectedCategory.toLowerCase());
+
+        // Status check
+        const matchesStatus = (selectedStatus === 'ALL') || 
+          (asset.status === selectedStatus);
+
+        // Search check
+        let matchesSearch = true;
+        if (searchQuery) {
+          const inTitle = (asset.title || '').toLowerCase().includes(searchQuery);
+          const inShortDesc = (asset.shortDesc || '').toLowerCase().includes(searchQuery);
+          const inFullDesc = (asset.fullDesc || '').toLowerCase().includes(searchQuery);
+          const inModel = (asset.model || '').toLowerCase().includes(searchQuery);
+          const inCategory = (asset.category || '').toLowerCase().includes(searchQuery);
+          const inTags = (asset.tags || []).some(t => t.toLowerCase().includes(searchQuery));
+
+          matchesSearch = inTitle || inShortDesc || inFullDesc || inModel || inCategory || inTags;
+        }
+
+        return matchesCat && matchesStatus && matchesSearch;
+      });
+
+      // Sorting
+      if (currentSort === 'NEWEST') {
+        filtered.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+      } else if (currentSort === 'TITLE_AZ') {
+        filtered.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
+      } else if (currentSort === 'CATEGORY') {
+        filtered.sort((a, b) => (a.category || '').localeCompare(b.category || ''));
+      }
+
+      // Handle Empty State
+      if (filtered.length === 0) {
+        grid.innerHTML = '';
+        if (emptyState) emptyState.classList.remove('hidden');
+        return;
+      } else {
+        if (emptyState) emptyState.classList.add('hidden');
+      }
+
+      // Render cards
+      grid.innerHTML = filtered.map(asset => {
+        // Color badge determination based on category
+        let badgeColor = 'bg-softblue-100 text-softblue-800 border-softblue-200';
+        const catLower = (asset.category || '').toLowerCase();
+        if (catLower.includes('stippling') || catLower.includes('pointillism')) {
+          badgeColor = 'bg-emerald-50 text-emerald-800 border-emerald-200';
+        } else if (catLower.includes('abstract')) {
+          badgeColor = 'bg-purple-50 text-purple-800 border-purple-200';
+        } else if (catLower.includes('landscapes')) {
+          badgeColor = 'bg-sky-50 text-sky-800 border-sky-200';
+        } else if (catLower.includes('portraits')) {
+          badgeColor = 'bg-amber-50 text-amber-800 border-amber-200';
+        } else if (catLower.includes('concept')) {
+          badgeColor = 'bg-rose-50 text-rose-800 border-rose-200';
+        }
+
+        // Status badge color
+        let statusBadge = 'bg-emerald-50 text-emerald-700 border-emerald-200';
+        if (asset.status === 'Free Blueprint') {
+          statusBadge = 'bg-blue-50 text-blue-700 border-blue-200';
+        } else if (asset.status === 'Print Ready') {
+          statusBadge = 'bg-amber-50 text-amber-800 border-amber-200';
+        }
+
+        // Tags pills (Clickable to filter!)
+        const tagsHtml = (asset.tags || []).slice(0, 3).map(tag => `
+          <button 
+            type="button" 
+            onclick="filterByTag('${tag}')" 
+            class="text-[11px] px-2 py-0.5 rounded-md bg-cream-200 hover:bg-softblue-100 hover:text-softblue-700 text-slate-600 transition border border-cream-300">
+            #${tag}
+          </button>
+        `).join('');
+
+        // Admin controls (Pencil & Trash)
+        const adminControlsHtml = isAdminLoggedIn ? `
+          <div class="absolute top-3 right-3 z-10 flex items-center space-x-1.5 bg-white/95 p-1 rounded-xl shadow-md border border-cream-300 backdrop-blur-sm">
+            <button 
+              onclick="openEditAssetModal('${asset.id}')" 
+              title="Edit Asset"
+              class="w-7 h-7 rounded-lg bg-softblue-50 hover:bg-softblue-100 text-softblue-700 flex items-center justify-center transition">
+              <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+            </button>
+            <button 
+              onclick="deleteAsset('${asset.id}')" 
+              title="Delete Asset"
+              class="w-7 h-7 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center transition">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        ` : '';
+
+        return `
+          <div class="group relative rounded-2xl bg-white border border-cream-300 hover:border-softblue-300 transition-all duration-300 shadow-art hover:shadow-art-hover overflow-hidden flex flex-col justify-between">
+            ${adminControlsHtml}
+            
+            <!-- Image & Overlay Container -->
+            <div class="relative art-aspect overflow-hidden bg-cream-200 cursor-pointer" onclick="openDetailModal('${asset.id}')">
+              <img 
+                src="${asset.imageUrl}" 
+                alt="${asset.title}"
+                loading="lazy"
+                onerror="this.src='https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=800&q=80'"
+                class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                <span class="inline-flex items-center space-x-1.5 text-xs font-semibold text-white bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/30">
+                  <i data-lucide="zoom-in" class="w-3.5 h-3.5"></i>
+                  <span>Inspect Metadata</span>
+                </span>
+              </div>
+              <!-- Floating status badge -->
+              <div class="absolute top-3 left-3">
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border shadow-sm backdrop-blur-md ${statusBadge}">
+                  ${asset.status || 'Available'}
+                </span>
+              </div>
+            </div>
+
+            <!-- Card Content -->
+            <div class="p-5 flex-1 flex flex-col justify-between space-y-3">
+              <div>
+                <!-- Category Badge -->
+                <div class="mb-2">
+                  <span class="px-2.5 py-0.5 rounded-md text-[11px] font-semibold border ${badgeColor}">
+                    ${asset.category}
+                  </span>
+                </div>
+
+                <!-- Asset Title -->
+                <h3 
+                  onclick="openDetailModal('${asset.id}')"
+                  class="font-display font-bold text-base sm:text-lg text-softblue-950 hover:text-softblue-600 transition line-clamp-1 cursor-pointer">
+                  ${asset.title}
+                </h3>
+
+                <!-- Short Description -->
+                <p class="text-xs text-slate-500 line-clamp-2 mt-1 leading-relaxed">
+                  ${asset.shortDesc || asset.fullDesc || 'No description provided.'}
+                </p>
+              </div>
+
+              <!-- Metadata Pills & Model -->
+              <div class="pt-2 border-t border-cream-200">
+                <div class="flex items-center justify-between text-[11px] text-slate-400 mb-2">
+                  <span class="font-medium text-slate-600 flex items-center space-x-1">
+                    <i data-lucide="cpu" class="w-3 h-3 text-softblue-600"></i>
+                    <span class="truncate max-w-[140px]">${asset.model || 'AI Model'}</span>
+                  </span>
+                  <span>${asset.resolution || 'UHD'}</span>
+                </div>
+
+                <!-- Clickable Tag Pills -->
+                <div class="flex flex-wrap gap-1.5 mb-3">
+                  ${tagsHtml}
+                </div>
+
+                <!-- Actions: View Details & Download/Inquire -->
+                <div class="grid grid-cols-2 gap-2 pt-1">
+                  <button 
+                    onclick="openDetailModal('${asset.id}')"
+                    class="py-2 px-3 rounded-xl bg-cream-100 hover:bg-cream-200 text-slate-700 text-xs font-semibold transition border border-cream-300 flex items-center justify-center space-x-1">
+                    <i data-lucide="eye" class="w-3.5 h-3.5 text-softblue-600"></i>
+                    <span>Details</span>
+                  </button>
+                  <button 
+                    onclick="openInquireModal('${asset.id}')"
+                    class="py-2 px-3 rounded-xl bg-softblue-600 hover:bg-softblue-700 text-white text-xs font-semibold transition shadow-sm flex items-center justify-center space-x-1">
+                    <i data-lucide="arrow-down-to-line" class="w-3.5 h-3.5"></i>
+                    <span>Inquire</span>
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Refresh lucide icons
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+    }
+
+    /* ==========================================
+       6. DETAILED METADATA MODAL (EXPANDED VIEW)
+       ========================================== */
+    function openDetailModal(assetId) {
+      const asset = galleryAssets.find(a => a.id === assetId);
+      if (!asset) return;
+
+      activeModalAsset = asset;
+
+      document.getElementById('detailModalImage').src = asset.imageUrl;
+      document.getElementById('detailModalRawLink').href = asset.imageUrl;
+      document.getElementById('detailModalTitle').textContent = asset.title;
+      document.getElementById('detailModalCategory').textContent = asset.category;
+      document.getElementById('detailModalStatus').textContent = asset.status || 'Available for License';
+      document.getElementById('detailModalDescription').textContent = asset.fullDesc || asset.shortDesc;
+      document.getElementById('detailModalModel').textContent = asset.model || 'Not specified';
+      document.getElementById('detailModalResolution').textContent = asset.resolution || 'High Definition';
+      document.getElementById('detailModalLicense').textContent = asset.license || 'Standard Commercial';
+      document.getElementById('detailModalDate').textContent = asset.date || 'Recent';
+      document.getElementById('detailModalPrompt').textContent = asset.prompt || 'Prompt parameters proprietary or not disclosed.';
+      document.getElementById('detailModalAspectRatio').textContent = `Aspect Ratio: ${asset.aspectRatio || '16:9'}`;
+
+      // Color Palette Swatches
+      const paletteContainer = document.getElementById('detailModalPaletteContainer');
+      const palette = asset.palette || ['#0F172A', '#3B82F6', '#E2E8F0'];
+      paletteContainer.innerHTML = palette.map(hex => `
+        <div 
+          onclick="copyColorToClipboard('${hex}')" 
+          title="Click to copy ${hex}" 
+          class="w-6 h-6 rounded-md shadow-sm border border-slate-300 cursor-pointer hover:scale-110 transition flex items-center justify-center text-[9px] font-mono text-white/90"
+          style="background-color: ${hex}">
+        </div>
+      `).join('') + `<span class="text-[11px] text-slate-400 font-mono ml-1.5">${palette.join(', ')}</span>`;
+
+      // Tags
+      const tagsContainer = document.getElementById('detailModalTags');
+      tagsContainer.innerHTML = (asset.tags || []).map(tag => `
+        <button 
+          onclick="closeDetailModal(); filterByTag('${tag}')" 
+          class="text-xs px-2.5 py-1 rounded-md bg-white border border-cream-300 hover:border-softblue-400 text-slate-700 font-medium transition">
+          #${tag}
+        </button>
+      `).join('');
+
+      // Admin Edit button inside modal
+      const adminEditBtn = document.getElementById('detailModalAdminEditBtn');
+      if (adminEditBtn) {
+        adminEditBtn.classList.toggle('hidden', !isAdminLoggedIn);
+      }
+
+      document.getElementById('detailModal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function closeDetailModal() {
+      const modal = document.getElementById('detailModal');
+      if (modal) modal.classList.add('hidden');
+      document.body.style.overflow = '';
+      activeModalAsset = null;
+    }
+
+    function openEditFromDetailModal() {
+      if (!activeModalAsset) return;
+      const assetId = activeModalAsset.id;
+      closeDetailModal();
+      openEditAssetModal(assetId);
+    }
+
+    function openInquireModalForCurrentAsset() {
+      if (!activeModalAsset) return;
+      const assetId = activeModalAsset.id;
+      closeDetailModal();
+      openInquireModal(assetId);
+    }
+
+    function copyPromptToClipboard() {
+      if (!activeModalAsset || !activeModalAsset.prompt) return;
+      navigator.clipboard.writeText(activeModalAsset.prompt).then(() => {
+        const btnText = document.getElementById('copyPromptBtnText');
+        if (btnText) {
+          const original = btnText.textContent;
+          btnText.textContent = 'Copied!';
+          setTimeout(() => { btnText.textContent = original; }, 2000);
+        }
+        showToast('Prompt copied to clipboard!', 'success');
+      });
+    }
+
+    function copyColorToClipboard(hex) {
+      navigator.clipboard.writeText(hex).then(() => {
+        showToast(`Copied hex code: ${hex}`, 'info');
+      });
+    }
+
+    /* ==========================================
+       7. ADMIN AUTHENTICATION (PASSWORD: gallery123)
+       ========================================== */
+    function handleAdminButtonClick() {
+      if (isAdminLoggedIn) {
+        adminLogout();
+      } else {
+        openLoginModal();
+      }
+    }
+
+    function openLoginModal() {
+      document.getElementById('loginErrorMessage').classList.add('hidden');
+      const passInput = document.getElementById('adminPasswordInput');
+      passInput.value = '';
+      document.getElementById('loginModal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      setTimeout(() => passInput.focus(), 150);
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function closeLoginModal() {
+      document.getElementById('loginModal').classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    function handleAdminLoginSubmit(e) {
+      e.preventDefault();
+      const enteredPassword = document.getElementById('adminPasswordInput').value;
+      const errorMsg = document.getElementById('loginErrorMessage');
+
+      if (enteredPassword === ADMIN_PASSWORD_HASH) {
+        isAdminLoggedIn = true;
+        localStorage.setItem(STORAGE_KEY_ADMIN, 'true');
+        closeLoginModal();
+        updateAdminUI();
+        renderGallery();
+        showToast('Admin Mode activated successfully! Full controls unlocked.', 'success');
+      } else {
+        errorMsg.classList.remove('hidden');
+        if (window.lucide) lucide.createIcons();
+      }
+    }
+
+    function adminLogout() {
+      isAdminLoggedIn = false;
+      localStorage.setItem(STORAGE_KEY_ADMIN, 'false');
+      updateAdminUI();
+      renderGallery();
+      showToast('Exited Admin Mode. Gallery switched to public view.', 'info');
+    }
+
+    function updateAdminUI() {
+      const banner = document.getElementById('adminBanner');
+      const navBtnText = document.getElementById('adminNavBtnText');
+      const navBtn = document.getElementById('adminNavBtn');
+
+      if (isAdminLoggedIn) {
+        if (banner) banner.classList.remove('hidden');
+        if (navBtnText) navBtnText.textContent = 'Admin Active (Logout)';
+        if (navBtn) {
+          navBtn.classList.remove('bg-softblue-50', 'text-softblue-800');
+          navBtn.classList.add('bg-emerald-50', 'text-emerald-800', 'border-emerald-300');
+        }
+      } else {
+        if (banner) banner.classList.add('hidden');
+        if (navBtnText) navBtnText.textContent = 'Admin Login';
+        if (navBtn) {
+          navBtn.classList.remove('bg-emerald-50', 'text-emerald-800', 'border-emerald-300');
+          navBtn.classList.add('bg-softblue-50', 'text-softblue-800', 'border-softblue-300');
+        }
+      }
+
+      if (window.lucide) lucide.createIcons();
+    }
+
+    /* ==========================================
+       8. ADD / EDIT ASSET FORM & LOCAL STORAGE
+       ========================================== */
+    function openAddAssetModal() {
+      if (!isAdminLoggedIn) {
+        openLoginModal();
+        return;
+      }
+
+      document.getElementById('formModalTitle').textContent = 'Add New Digital Asset';
+      document.getElementById('formSubmitBtnText').textContent = 'Publish to Gallery';
+      document.getElementById('formAssetId').value = '';
+
+      // Reset fields
+      document.getElementById('formTitle').value = '';
+      document.getElementById('formImageUrl').value = '';
+      document.getElementById('formImageFileInput').value = '';
+      document.getElementById('formImagePreview').classList.add('hidden');
+      document.getElementById('formImagePlaceholderText').classList.remove('hidden');
+      document.getElementById('formCategorySelect').value = 'Pointillism & Stippling';
+      document.getElementById('customCategoryGroup').classList.add('hidden');
+      document.getElementById('formCustomCategory').value = '';
+      document.getElementById('formShortDesc').value = '';
+      document.getElementById('formFullDesc').value = '';
+      document.getElementById('formTags').value = '';
+      document.getElementById('formModel').value = 'Midjourney v6.1';
+      document.getElementById('formResolution').value = '3840 × 2160 (4K UHD)';
+      document.getElementById('formLicense').value = 'Extended Commercial License';
+      document.getElementById('formPalette').value = '#0F172A, #3B82F6, #F8FAFC';
+      document.getElementById('formPrompt').value = '';
+      document.getElementById('formStatus').value = 'Available for License';
+
+      document.getElementById('assetFormModal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function openEditAssetModal(assetId) {
+      if (!isAdminLoggedIn) {
+        openLoginModal();
+        return;
+      }
+
+      const asset = galleryAssets.find(a => a.id === assetId);
+      if (!asset) return;
+
+      document.getElementById('formModalTitle').textContent = `Edit Asset: ${asset.title}`;
+      document.getElementById('formSubmitBtnText').textContent = 'Update Asset';
+      document.getElementById('formAssetId').value = asset.id;
+
+      document.getElementById('formTitle').value = asset.title || '';
+      document.getElementById('formImageUrl').value = asset.imageUrl || '';
+      document.getElementById('formImageFileInput').value = '';
+      
+      // Live preview
+      const previewImg = document.getElementById('formImagePreview');
+      const placeholderText = document.getElementById('formImagePlaceholderText');
+      if (asset.imageUrl) {
+        previewImg.src = asset.imageUrl;
+        previewImg.classList.remove('hidden');
+        placeholderText.classList.add('hidden');
+      }
+
+      // Category check
+      const catSelect = document.getElementById('formCategorySelect');
+      const customGroup = document.getElementById('customCategoryGroup');
+      const customInput = document.getElementById('formCustomCategory');
+      
+      const standardCategories = ['Pointillism & Stippling', 'Abstract', 'Landscapes', 'Portraits', 'Concept Art'];
+      if (standardCategories.includes(asset.category)) {
+        catSelect.value = asset.category;
+        customGroup.classList.add('hidden');
+        customInput.value = '';
+      } else {
+        catSelect.value = 'CUSTOM';
+        customGroup.classList.remove('hidden');
+        customInput.value = asset.category || '';
+      }
+
+      document.getElementById('formShortDesc').value = asset.shortDesc || '';
+      document.getElementById('formFullDesc').value = asset.fullDesc || '';
+      document.getElementById('formTags').value = (asset.tags || []).join(', ');
+      document.getElementById('formModel').value = asset.model || '';
+      document.getElementById('formResolution').value = asset.resolution || '';
+      document.getElementById('formLicense').value = asset.license || '';
+      document.getElementById('formPalette').value = (asset.palette || []).join(', ');
+      document.getElementById('formPrompt').value = asset.prompt || '';
+      document.getElementById('formStatus').value = asset.status || 'Available for License';
+
+      document.getElementById('assetFormModal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function closeAssetFormModal() {
+      document.getElementById('assetFormModal').classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    function handleFormCategoryChange(val) {
+      const customGroup = document.getElementById('customCategoryGroup');
+      if (val === 'CUSTOM') {
+        customGroup.classList.remove('hidden');
+        document.getElementById('formCustomCategory').focus();
+      } else {
+        customGroup.classList.add('hidden');
+      }
+    }
+
+    function handleImageUrlInput(url) {
+      const previewImg = document.getElementById('formImagePreview');
+      const placeholderText = document.getElementById('formImagePlaceholderText');
+      if (url && url.trim().length > 5) {
+        previewImg.src = url.trim();
+        previewImg.classList.remove('hidden');
+        placeholderText.classList.add('hidden');
+      } else {
+        previewImg.classList.add('hidden');
+        placeholderText.classList.remove('hidden');
+      }
+    }
+
+    function handleImageFileUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const base64Url = evt.target.result;
+        document.getElementById('formImageUrl').value = base64Url;
+        const previewImg = document.getElementById('formImagePreview');
+        const placeholderText = document.getElementById('formImagePlaceholderText');
+        previewImg.src = base64Url;
+        previewImg.classList.remove('hidden');
+        placeholderText.classList.add('hidden');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function handleAssetFormSubmit(e) {
+      e.preventDefault();
+
+      const assetId = document.getElementById('formAssetId').value;
+      const title = document.getElementById('formTitle').value.trim();
+      const imageUrl = document.getElementById('formImageUrl').value.trim();
+      
+      if (!title || !imageUrl) {
+        showToast('Please provide both Title and Image Source', 'warning');
+        return;
+      }
+
+      // Determine category
+      const catSelectVal = document.getElementById('formCategorySelect').value;
+      let finalCategory = catSelectVal;
+      if (catSelectVal === 'CUSTOM') {
+        const customVal = document.getElementById('formCustomCategory').value.trim();
+        if (!customVal) {
+          showToast('Please enter a custom category name', 'warning');
+          return;
+        }
+        finalCategory = customVal;
+      }
+
+      // Process tags
+      const rawTags = document.getElementById('formTags').value;
+      const tags = rawTags.split(',')
+        .map(t => t.trim().toLowerCase().replace(/^#/, ''))
+        .filter(t => t.length > 0);
+
+      // Process palette
+      const rawPalette = document.getElementById('formPalette').value;
+      const palette = rawPalette.split(',')
+        .map(c => c.trim())
+        .filter(c => c.length > 0);
+
+      const newAssetObj = {
+        id: assetId || ('art-' + Date.now().toString(36)),
+        title: title,
+        imageUrl: imageUrl,
+        category: finalCategory,
+        shortDesc: document.getElementById('formShortDesc').value.trim(),
+        fullDesc: document.getElementById('formFullDesc').value.trim(),
+        tags: tags.length > 0 ? tags : ['digitalart', 'aiart'],
+        model: document.getElementById('formModel').value.trim() || 'Custom AI Engine',
+        resolution: document.getElementById('formResolution').value.trim() || '4096 × 2160',
+        license: document.getElementById('formLicense').value.trim() || 'Commercial License',
+        status: document.getElementById('formStatus').value,
+        prompt: document.getElementById('formPrompt').value.trim(),
+        palette: palette.length > 0 ? palette : ['#1E3A8A', '#38BDF8', '#F1F5F9'],
+        aspectRatio: '16:9',
+        date: new Date().toISOString().split('T')[0]
+      };
+
+      if (assetId) {
+        // Update existing
+        const index = galleryAssets.findIndex(a => a.id === assetId);
+        if (index !== -1) {
+          galleryAssets[index] = { ...galleryAssets[index], ...newAssetObj };
+          showToast(`Asset "${title}" updated successfully!`, 'success');
+        }
+      } else {
+        // Add new asset to beginning
+        galleryAssets.unshift(newAssetObj);
+        showToast(`Asset "${title}" added to gallery!`, 'success');
+      }
+
+      // Save to localStorage
+      saveAssetsToStorage();
+      closeAssetFormModal();
+      renderCategoryTabs();
+      renderGallery();
+    }
+
+    function deleteAsset(assetId) {
+      if (!isAdminLoggedIn) return;
+
+      const asset = galleryAssets.find(a => a.id === assetId);
+      if (!asset) return;
+
+      const confirmDelete = confirm(`Are you sure you want to permanently delete "${asset.title}" from the gallery?`);
+      if (confirmDelete) {
+        galleryAssets = galleryAssets.filter(a => a.id !== assetId);
+        saveAssetsToStorage();
+        renderCategoryTabs();
+        renderGallery();
+        showToast(`Deleted "${asset.title}"`, 'info');
+      }
+    }
+
+    function confirmResetCatalog() {
+      if (!isAdminLoggedIn) return;
+      const confirmReset = confirm('Reset gallery back to the curated 10-piece initial exhibition? Any custom assets added will be replaced.');
+      if (confirmReset) {
+        galleryAssets = [...INITIAL_SEED_ASSETS];
+        saveAssetsToStorage();
+        renderCategoryTabs();
+        renderGallery();
+        showToast('Gallery restored to original curated catalog.', 'success');
+      }
+    }
+
+    /* ==========================================
+       9. DOWNLOAD & INQUIRE MODAL
+       ========================================== */
+    let currentInquireAsset = null;
+
+    function openInquireModal(assetId) {
+      const asset = galleryAssets.find(a => a.id === assetId);
+      if (!asset) return;
+      currentInquireAsset = asset;
+
+      document.getElementById('inquireModalAssetTitle').textContent = `Inquiring for: "${asset.title}" (${asset.category})`;
+      document.getElementById('inquireModal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function closeInquireModal() {
+      document.getElementById('inquireModal').classList.add('hidden');
+      document.body.style.overflow = '';
+      currentInquireAsset = null;
+    }
+
+    function triggerDirectDownload() {
+      if (!currentInquireAsset) return;
+      
+      // Simulate file download
+      const link = document.createElement('a');
+      link.href = currentInquireAsset.imageUrl;
+      link.target = '_blank';
+      link.download = `${currentInquireAsset.title.toLowerCase().replace(/\s+/g, '-')}-comp.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      showToast(`Sample download initiated for "${currentInquireAsset.title}"`, 'success');
+    }
+
+    function handleInquirySubmit(e) {
+      e.preventDefault();
+      closeInquireModal();
+      showToast('Thank you! Your curation and licensing inquiry has been dispatched to ANAND MOHANDAS.', 'success');
+    }
+
+    /* ==========================================
+       10. TOAST NOTIFICATION SYSTEM
+       ========================================== */
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toastContainer');
+      if (!container) return;
+
+      const toast = document.createElement('div');
+      toast.className = 'pointer-events-auto flex items-center space-x-2 px-4 py-3 rounded-xl shadow-art text-xs sm:text-sm font-medium transition-all transform duration-300 translate-y-3 opacity-0 max-w-sm border backdrop-blur-md';
+
+      let bgClasses = 'bg-white text-slate-800 border-cream-300';
+      let icon = 'info';
+
+      if (type === 'success') {
+        bgClasses = 'bg-emerald-900/90 text-white border-emerald-700';
+        icon = 'check-circle';
+      } else if (type === 'warning') {
+        bgClasses = 'bg-amber-900/90 text-white border-amber-700';
+        icon = 'alert-triangle';
+      } else if (type === 'error') {
+        bgClasses = 'bg-rose-900/90 text-white border-rose-700';
+        icon = 'alert-circle';
+      } else {
+        bgClasses = 'bg-softblue-900/90 text-white border-softblue-700';
+        icon = 'info';
+      }
+
+      toast.className += ` ${bgClasses}`;
+      toast.innerHTML = `
+        <i data-lucide="${icon}" class="w-4 h-4 shrink-0"></i>
+        <span>${message}</span>
+      `;
+
+      container.appendChild(toast);
+      if (window.lucide) lucide.createIcons();
+
+      // Animate in
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-3', 'opacity-0');
+      });
+
+      // Auto dismiss after 3.5 seconds
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-x-4');
+        setTimeout(() => {
+          if (toast.parentElement) toast.parentElement.removeChild(toast);
+        }, 300);
+      }, 3500);
+    }
+  </script>
+</body>
+</html>
