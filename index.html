@@ -630,216 +630,49 @@
             />
           </div>
 
-          <!-- Image URL & Live Preview / Local File Upload -->
-          <div class="p-3.5 rounded-xl bg-cream-50 border border-cream-300 space-y-3">
-            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-700">
-              Image Source (Direct URL or Upload Image) <span class="text-rose-500">*</span>
-            </label>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <span class="text-[11px] text-slate-500 block mb-1">Option A: Image Web URL</span>
-                <input 
-                  type="url" 
-                  id="formImageUrl" 
-                  oninput="handleImageUrlInput(this.value)"
-                  placeholder="https://images.unsplash.com/..."
-                  class="w-full px-3 py-1.5 rounded-lg border border-cream-300 text-xs focus:ring-1 focus:ring-softblue-500"
-                />
-              </div>
-
-              <div>
-                <span class="text-[11px] text-slate-500 block mb-1">Option B: Upload Local File</span>
-                <input 
-                  type="file" 
-                  id="formImageFileInput" 
-                  accept="image/*"
-                  onchange="handleImageFileUpload(event)"
-                  class="w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-softblue-100 file:text-softblue-700 hover:file:bg-softblue-200 cursor-pointer"
-                />
-              </div>
-            </div>
-
-            <!-- Image Live Preview Box -->
-            <div id="imagePreviewContainer" class="flex items-center space-x-3 pt-1">
-              <div class="w-20 h-16 rounded-lg bg-cream-200 border border-cream-300 overflow-hidden flex items-center justify-center shrink-0">
-                <img id="formImagePreview" src="" alt="Preview" class="w-full h-full object-cover hidden" />
-                <span id="formImagePlaceholderText" class="text-[10px] text-slate-400 text-center px-1">No Image</span>
-              </div>
-              <span class="text-xs text-slate-500">Live preview of selected artwork thumbnail.</span>
-            </div>
-          </div>
-
-          <!-- Category Selection -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
-                Category <span class="text-rose-500">*</span>
+          <!-- Image URL Input & Live Preview (Clean Direct URL Input, No Heavy Binary) -->
+          <div class="p-3.5 sm:p-4 rounded-xl bg-cream-50 border border-cream-300 space-y-3">
+            <div class="flex items-center justify-between">
+              <label for="formImageUrl" class="block text-xs font-semibold uppercase tracking-wider text-slate-700">
+                Image Web URL <span class="text-rose-500">*</span>
               </label>
-              <select 
-                id="formCategorySelect" 
-                onchange="handleFormCategoryChange(this.value)"
-                required
-                class="w-full px-3 py-2 rounded-xl border border-cream-300 text-sm focus:outline-none focus:ring-2 focus:ring-softblue-200">
-                <option value="Pointillism & Stippling">Pointillism & Stippling</option>
-                <option value="Abstract">Abstract</option>
-                <option value="Landscapes">Landscapes</option>
-                <option value="Portraits">Portraits</option>
-                <option value="Concept Art">Concept Art</option>
-                <option value="CUSTOM">+ Add New Custom Category...</option>
-              </select>
+              <span class="text-[11px] font-medium text-softblue-700 bg-softblue-50 px-2 py-0.5 rounded border border-softblue-200">
+                Direct Link (CDN / Imgur / GitHub Raw / Unsplash)
+              </span>
             </div>
 
-            <!-- Custom Category input (appears if CUSTOM is selected) -->
-            <div id="customCategoryGroup" class="hidden">
-              <label class="block text-xs font-semibold uppercase tracking-wider text-softblue-800 mb-1">
-                New Category Name <span class="text-rose-500">*</span>
-              </label>
+            <div class="relative">
+              <i data-lucide="link-2" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
               <input 
-                type="text" 
-                id="formCustomCategory" 
-                placeholder="e.g. Cyberpunk Synthwave"
-                class="w-full px-3 py-2 rounded-xl border border-softblue-300 bg-softblue-50 text-sm focus:ring-2 focus:ring-softblue-200"
+                type="url" 
+                id="formImageUrl" 
+                required
+                oninput="handleImageUrlInput(this.value)"
+                placeholder="https://images.unsplash.com/... or https://i.imgur.com/... or raw.githubusercontent.com/..."
+                class="w-full pl-9 pr-3 py-2 rounded-lg border border-cream-300 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-softblue-300 focus:border-softblue-500 bg-white shadow-sm"
               />
             </div>
 
-            <!-- Price / Status -->
-            <div>
-              <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
-                License Status / Availability
-              </label>
-              <select 
-                id="formStatus" 
-                class="w-full px-3 py-2 rounded-xl border border-cream-300 text-sm focus:outline-none focus:ring-2 focus:ring-softblue-200">
-                <option value="Available for License">Available for License</option>
-                <option value="Print Ready">Print Ready</option>
-                <option value="Free Blueprint">Free Blueprint</option>
-                <option value="Exclusive Reserve">Exclusive Reserve</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Short Description -->
-          <div>
-            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
-              Short Description (Card Snippet) <span class="text-rose-500">*</span>
-            </label>
-            <input 
-              type="text" 
-              id="formShortDesc" 
-              required
-              maxlength="150"
-              placeholder="Brief summary displayed on the card..."
-              class="w-full px-3.5 py-2 rounded-xl border border-cream-300 text-sm focus:ring-2 focus:ring-softblue-200"
-            />
-          </div>
-
-          <!-- Full Description -->
-          <div>
-            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
-              Full Description & Artistic Notes
-            </label>
-            <textarea 
-              id="formFullDesc" 
-              rows="3"
-              placeholder="In-depth conceptual breakdown, artistic influences, and notes on color and technique..."
-              class="w-full px-3.5 py-2 rounded-xl border border-cream-300 text-sm focus:ring-2 focus:ring-softblue-200"></textarea>
-          </div>
-
-          <!-- Tags -->
-          <div>
-            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
-              Tags (comma separated)
-            </label>
-            <input 
-              type="text" 
-              id="formTags" 
-              placeholder="stippling, pointillism, dots, monochrome, ink"
-              class="w-full px-3.5 py-2 rounded-xl border border-cream-300 text-sm focus:ring-2 focus:ring-softblue-200"
-            />
-            <span class="text-[11px] text-slate-400">Pills will be rendered and clickable for rapid filtering.</span>
-          </div>
-
-          <!-- Technical Details Grid -->
-          <div class="border-t border-cream-300 pt-4">
-            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3 flex items-center space-x-1.5">
-              <i data-lucide="sliders" class="w-3.5 h-3.5 text-softblue-600"></i>
-              <span>Technical Synthesis Parameters</span>
-            </h4>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-              <div>
-                <label class="block font-medium text-slate-600 mb-1">AI Model / Generator</label>
-                <input 
-                  type="text" 
-                  id="formModel" 
-                  placeholder="Midjourney v6.1 / Flux.1 Dev / SDXL"
-                  class="w-full px-3 py-1.5 rounded-lg border border-cream-300 focus:ring-1 focus:ring-softblue-400"
-                />
-              </div>
-
-              <div>
-                <label class="block font-medium text-slate-600 mb-1">Resolution / Dimensions</label>
-                <input 
-                  type="text" 
-                  id="formResolution" 
-                  placeholder="4096 × 4096 px (1:1)"
-                  class="w-full px-3 py-1.5 rounded-lg border border-cream-300 focus:ring-1 focus:ring-softblue-400"
-                />
-              </div>
-
-              <div>
-                <label class="block font-medium text-slate-600 mb-1">License Type</label>
-                <input 
-                  type="text" 
-                  id="formLicense" 
-                  placeholder="Extended Commercial / CC-BY 4.0"
-                  class="w-full px-3 py-1.5 rounded-lg border border-cream-300 focus:ring-1 focus:ring-softblue-400"
-                />
-              </div>
-
-              <div>
-                <label class="block font-medium text-slate-600 mb-1">Color Palette (Hex codes, comma separated)</label>
-                <input 
-                  type="text" 
-                  id="formPalette" 
-                  placeholder="#0F172A, #38BDF8, #E2E8F0, #F59E0B"
-                  class="w-full px-3 py-1.5 rounded-lg border border-cream-300 focus:ring-1 focus:ring-softblue-400"
-                />
-              </div>
+            <div class="flex items-center justify-between text-[11px] text-slate-500">
+              <span class="flex items-center space-x-1">
+                <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-600"></i>
+                <span>Direct image URLs eliminate Vercel 4.5MB payload limits</span>
+              </span>
+              <span id="urlValidationStatus" class="font-medium"></span>
             </div>
 
-            <div class="mt-3">
-              <label class="block text-xs font-medium text-slate-600 mb-1">Prompt / Synthesis Parameters</label>
-              <textarea 
-                id="formPrompt" 
-                rows="2"
-                placeholder="Full generation prompt, negative prompt, aspect ratio flags, weights..."
-                class="w-full px-3 py-1.5 rounded-lg border border-cream-300 text-xs font-mono focus:ring-1 focus:ring-softblue-400"></textarea>
+            <!-- Image Live Preview Box -->
+            <div id="imagePreviewContainer" class="flex items-center space-x-3 pt-2 border-t border-cream-200">
+              <div class="w-20 h-16 rounded-lg bg-cream-200 border border-cream-300 overflow-hidden flex items-center justify-center shrink-0 shadow-inner">
+                <img id="formImagePreview" src="" alt="Preview" class="w-full h-full object-cover hidden" onerror="handlePreviewError()" />
+                <span id="formImagePlaceholderText" class="text-[10px] text-slate-400 text-center px-1">No Image</span>
+              </div>
+              <div>
+                <span class="text-xs font-medium text-slate-700 block">Thumbnail Preview</span>
+                <span id="previewHelpText" class="text-[11px] text-slate-400">Paste a direct image link above to preview your digital asset thumbnail.</span>
+              </div>
             </div>
           </div>
-
-          <!-- Form Submit & Cancel -->
-          <div class="pt-4 border-t border-cream-300 flex items-center justify-end space-x-3">
-            <button 
-              type="button" 
-              onclick="closeAssetFormModal()" 
-              class="px-4 py-2 rounded-xl border border-cream-300 hover:bg-cream-100 text-slate-600 text-xs font-semibold transition">
-              Cancel
-            </button>
-            <button 
-              type="submit" 
-              class="px-5 py-2 rounded-xl bg-softblue-600 hover:bg-softblue-700 text-white text-xs font-semibold shadow-md transition flex items-center space-x-1.5">
-              <i data-lucide="check" class="w-4 h-4"></i>
-              <span id="formSubmitBtnText">Save Asset</span>
-            </button>
-          </div>
-
-        </form>
-
-      </div>
-    </div>
-  </div>
 
   <!-- ============================================================ -->
   <!-- 8. DOWNLOAD / INQUIRE MODAL -->
@@ -1303,10 +1136,19 @@
       if (isUniversalCloudSyncing) return;
       isUniversalCloudSyncing = true;
       try {
-        const res = await fetch(API_ASSETS_URL, {
-          headers: { 'Accept': 'application/json' },
-          cache: 'no-cache'
-        });
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000);
+        let res;
+        try {
+          res = await fetch(API_ASSETS_URL, {
+            headers: { 'Accept': 'application/json' },
+            cache: 'no-cache',
+            signal: controller.signal
+          });
+        } finally {
+          clearTimeout(timeoutId);
+        }
+
         if (res.ok) {
           const json = await res.json();
           const remoteAssets = Array.isArray(json) ? json : (json.data || json.assets);
@@ -1319,10 +1161,14 @@
               console.log('[Universal Cloud DB] Gallery assets synchronized from cloud store.');
             }
           }
+        } else if (!silent && res.status !== 404) {
+          console.warn('[Universal Cloud DB] Non-OK status from server:', res.status);
+          showToast('Could not reach cloud database. Operating in resilient offline mode.', 'info');
         }
       } catch (err) {
         if (!silent) {
-          console.warn('[Universal Cloud DB] Falling back to local cache/seed:', err);
+          console.warn('[Universal Cloud DB] Cloud sync unavailable, working with local cache:', err);
+          showToast('Working in offline mode with cached assets. Local changes remain intact.', 'info');
         }
       } finally {
         isUniversalCloudSyncing = false;
@@ -1331,39 +1177,77 @@
 
     async function pushAssetToCloud(action, assetOrId, allAssets) {
       try {
+        const isDelete = action === 'delete';
+        const isReset = action === 'reset';
+        const assetObj = (!isDelete && !isReset && typeof assetOrId === 'object') ? assetOrId : null;
+        const targetId = isDelete ? assetOrId : (assetObj ? assetObj.id : null);
+
+        // Lightweight payload: only send the target asset or command to stay far below Vercel's 4.5MB limit
         const payload = {
           action: action,
-          asset: (action !== 'delete' && typeof assetOrId === 'object') ? assetOrId : null,
-          id: (action === 'delete') ? assetOrId : (assetOrId && assetOrId.id ? assetOrId.id : null),
-          data: allAssets,
+          asset: assetObj,
+          id: targetId,
           meta: {
             action: action,
-            id: (action === 'delete') ? assetOrId : (assetOrId && assetOrId.id ? assetOrId.id : null),
+            id: targetId,
             timestamp: new Date().toISOString()
           }
         };
 
-        const res = await fetch(API_ASSETS_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-
-        if (res.ok) {
-          const json = await res.json();
-          if (json && Array.isArray(json.data) && json.data.length > 0) {
-            galleryAssets = json.data;
-            saveAssetsToStorage();
-            renderCategoryTabs();
-            renderGallery();
-          }
-          console.log(`[Universal Cloud DB] Asset action "${action}" successfully persisted to cloud database.`);
-          return true;
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000);
+        let res;
+        try {
+          res = await fetch(API_ASSETS_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+            signal: controller.signal
+          });
+        } finally {
+          clearTimeout(timeoutId);
         }
+
+        if (!res.ok) {
+          let errorDetail = '';
+          try {
+            const errJson = await res.json();
+            errorDetail = errJson.error || errJson.message || '';
+          } catch (e) {
+            // response might be raw text or HTML (e.g. 413)
+          }
+
+          if (res.status === 413) {
+            showToast('Payload exceeds server limit (4.5MB). Please use a direct image URL instead of heavy files.', 'error');
+          } else if (res.status === 404) {
+            console.warn('[Cloud DB] Cloud API endpoint not detected. Operating in local persistence mode.');
+          } else if (res.status >= 500) {
+            showToast('Cloud database temporarily unavailable. Changes are safely saved locally on your device.', 'info');
+          } else {
+            showToast(`Cloud sync notification: ${errorDetail || 'Saved to local storage.'}`, 'warning');
+          }
+          return false;
+        }
+
+        const json = await res.json();
+        if (json && Array.isArray(json.data) && json.data.length > 0) {
+          galleryAssets = json.data;
+          saveAssetsToStorage();
+          renderCategoryTabs();
+          renderGallery();
+        }
+        console.log(`[Universal Cloud DB] Asset action "${action}" successfully persisted to cloud.`);
+        return true;
       } catch (err) {
-        console.warn(`[Universal Cloud DB] Cloud push error for "${action}":`, err);
+        if (err.name === 'AbortError') {
+          console.warn(`[Universal Cloud DB] Network timeout pushing "${action}". Saved to local storage.`);
+          showToast('Network request timed out. Changes saved locally and will sync later.', 'warning');
+        } else {
+          console.warn(`[Universal Cloud DB] Cloud push error for "${action}":`, err);
+          showToast('Cloud sync paused (network unavailable). Changes saved securely to device.', 'info');
+        }
+        return false;
       }
-      return false;
     }
 
     // Real-time synchronization listeners across tabs and devices
@@ -2072,135 +1956,219 @@
     function handleImageUrlInput(url) {
       const previewImg = document.getElementById('formImagePreview');
       const placeholderText = document.getElementById('formImagePlaceholderText');
-      if (url && url.trim().length > 5) {
-        previewImg.src = url.trim();
-        previewImg.classList.remove('hidden');
-        placeholderText.classList.add('hidden');
-      } else {
-        previewImg.classList.add('hidden');
-        placeholderText.classList.remove('hidden');
-      }
-    }
+      const helpText = document.getElementById('previewHelpText');
+      const statusText = document.getElementById('urlValidationStatus');
+      const cleanUrl = (url || '').trim();
 
-    function handleImageFileUpload(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        const base64Url = evt.target.result;
-        document.getElementById('formImageUrl').value = base64Url;
-        const previewImg = document.getElementById('formImagePreview');
-        const placeholderText = document.getElementById('formImagePlaceholderText');
-        previewImg.src = base64Url;
-        previewImg.classList.remove('hidden');
-        placeholderText.classList.add('hidden');
-      };
-      reader.readAsDataURL(file);
-    }
-
-    function handleAssetFormSubmit(e) {
-      e.preventDefault();
-
-      const assetId = document.getElementById('formAssetId').value;
-      const title = document.getElementById('formTitle').value.trim();
-      const imageUrl = document.getElementById('formImageUrl').value.trim();
-      
-      if (!title || !imageUrl) {
-        showToast('Please provide both Title and Image Source', 'warning');
+      // Guard against heavy base64 strings to prevent payload size limits
+      if (cleanUrl.startsWith('data:image/') || cleanUrl.length > 8192) {
+        if (previewImg) previewImg.classList.add('hidden');
+        if (placeholderText) {
+          placeholderText.textContent = 'Blocked';
+          placeholderText.classList.remove('hidden');
+        }
+        if (statusText) {
+          statusText.innerHTML = '<span class="text-rose-600 font-medium">Base64 binary strings not allowed</span>';
+        }
+        if (helpText) {
+          helpText.textContent = 'Please use a direct HTTP/HTTPS link (Imgur, GitHub, Unsplash, CDN) instead of binary data.';
+        }
+        showToast('Please use a direct web image URL (CDN/Imgur/GitHub) instead of Base64 to prevent payload errors.', 'warning');
         return;
       }
 
-      // Determine category
-      const catSelectVal = document.getElementById('formCategorySelect').value;
-      let finalCategory = catSelectVal;
-      if (catSelectVal === 'CUSTOM') {
-        const customVal = document.getElementById('formCustomCategory').value.trim();
-        if (!customVal) {
-          showToast('Please enter a custom category name', 'warning');
+      if (statusText) statusText.innerHTML = '';
+
+      if (cleanUrl.length > 7 && (cleanUrl.startsWith('http://') || cleanUrl.startsWith('https://'))) {
+        if (previewImg) {
+          previewImg.src = cleanUrl;
+          previewImg.classList.remove('hidden');
+        }
+        if (placeholderText) placeholderText.classList.add('hidden');
+        if (helpText) helpText.textContent = 'Previewing asset from remote URL.';
+      } else {
+        if (previewImg) {
+          previewImg.src = '';
+          previewImg.classList.add('hidden');
+        }
+        if (placeholderText) {
+          placeholderText.textContent = 'No Image';
+          placeholderText.classList.remove('hidden');
+        }
+        if (helpText) helpText.textContent = 'Paste an image link above to preview your digital asset thumbnail.';
+      }
+    }
+
+    function handlePreviewError() {
+      const previewImg = document.getElementById('formImagePreview');
+      const placeholderText = document.getElementById('formImagePlaceholderText');
+      const helpText = document.getElementById('previewHelpText');
+      if (previewImg) previewImg.classList.add('hidden');
+      if (placeholderText) {
+        placeholderText.textContent = 'Load Error';
+        placeholderText.classList.remove('hidden');
+      }
+      if (helpText) {
+        helpText.innerHTML = '<span class="text-amber-600">Could not load preview. Check the URL permissions.</span>';
+      }
+    }
+
+    async function handleAssetFormSubmit(e) {
+      e.preventDefault();
+
+      try {
+        const assetId = document.getElementById('formAssetId').value;
+        const title = document.getElementById('formTitle').value.trim();
+        const imageUrl = document.getElementById('formImageUrl').value.trim();
+        
+        if (!title) {
+          showToast('Please provide an asset title.', 'warning');
           return;
         }
-        finalCategory = customVal;
-      }
 
-      // Process tags
-      const rawTags = document.getElementById('formTags').value;
-      const tags = rawTags.split(',')
-        .map(t => t.trim().toLowerCase().replace(/^#/, ''))
-        .filter(t => t.length > 0);
-
-      // Process palette
-      const rawPalette = document.getElementById('formPalette').value;
-      const palette = rawPalette.split(',')
-        .map(c => c.trim())
-        .filter(c => c.length > 0);
-
-      const newAssetObj = {
-        id: assetId || ('art-' + Date.now().toString(36)),
-        title: title,
-        imageUrl: imageUrl,
-        category: finalCategory,
-        shortDesc: document.getElementById('formShortDesc').value.trim(),
-        fullDesc: document.getElementById('formFullDesc').value.trim(),
-        tags: tags.length > 0 ? tags : ['digitalart', 'aiart'],
-        model: document.getElementById('formModel').value.trim() || 'Custom AI Engine',
-        resolution: document.getElementById('formResolution').value.trim() || '4096 × 2160',
-        license: document.getElementById('formLicense').value.trim() || 'Commercial License',
-        status: document.getElementById('formStatus').value,
-        prompt: document.getElementById('formPrompt').value.trim(),
-        palette: palette.length > 0 ? palette : ['#1E3A8A', '#38BDF8', '#F1F5F9'],
-        aspectRatio: '16:9',
-        date: new Date().toISOString().split('T')[0]
-      };
-
-      if (assetId) {
-        // Update existing
-        const index = galleryAssets.findIndex(a => a.id === assetId);
-        if (index !== -1) {
-          galleryAssets[index] = { ...galleryAssets[index], ...newAssetObj };
-          showToast(`Asset "${title}" updated successfully!`, 'success');
+        if (!imageUrl) {
+          showToast('Please provide a valid direct Image URL.', 'warning');
+          return;
         }
-      } else {
-        // Add new asset to beginning
-        galleryAssets.unshift(newAssetObj);
-        showToast(`Asset "${title}" added to gallery!`, 'success');
-      }
 
-      // Save to localStorage & push directly to cloud database
-      saveAssetsToStorage();
-      pushAssetToCloud(assetId ? 'edit' : 'create', newAssetObj, galleryAssets);
-      closeAssetFormModal();
-      renderCategoryTabs();
-      renderGallery();
-    }
+        // Prevent heavy Base64 strings to prevent payload size limits
+        if (imageUrl.startsWith('data:image/') || imageUrl.length > 8192) {
+          showToast('Base64 binary strings exceed payload limits. Please enter a direct Image URL (e.g. Unsplash, Imgur, GitHub raw link).', 'error');
+          return;
+        }
 
-    function deleteAsset(assetId) {
-      if (!isAdminLoggedIn) return;
+        // Validate basic URL scheme
+        if (!imageUrl.startsWith('http://') && !imageUrl.startsWith('https://')) {
+          showToast('Please enter a valid HTTP or HTTPS image URL.', 'warning');
+          return;
+        }
 
-      const asset = galleryAssets.find(a => a.id === assetId);
-      if (!asset) return;
+        // Determine category
+        const catSelectVal = document.getElementById('formCategorySelect').value;
+        let finalCategory = catSelectVal;
+        if (catSelectVal === 'CUSTOM') {
+          const customVal = document.getElementById('formCustomCategory').value.trim();
+          if (!customVal) {
+            showToast('Please enter a custom category name.', 'warning');
+            return;
+          }
+          finalCategory = customVal;
+        }
 
-      const confirmDelete = confirm(`Are you sure you want to permanently delete "${asset.title}" from the gallery?`);
-      if (confirmDelete) {
-        galleryAssets = galleryAssets.filter(a => a.id !== assetId);
-        saveAssetsToStorage();
-        pushAssetToCloud('delete', assetId, galleryAssets);
+        // Process tags
+        const rawTags = document.getElementById('formTags').value;
+        const tags = rawTags.split(',')
+          .map(t => t.trim().toLowerCase().replace(/^#/, ''))
+          .filter(t => t.length > 0);
+
+        // Process palette
+        const rawPalette = document.getElementById('formPalette').value;
+        const palette = rawPalette.split(',')
+          .map(c => c.trim())
+          .filter(c => c.length > 0);
+
+        const newAssetObj = {
+          id: assetId || ('art-' + Date.now().toString(36)),
+          title: title,
+          imageUrl: imageUrl,
+          category: finalCategory,
+          shortDesc: document.getElementById('formShortDesc').value.trim(),
+          fullDesc: document.getElementById('formFullDesc').value.trim(),
+          tags: tags.length > 0 ? tags : ['digitalart', 'aiart'],
+          model: document.getElementById('formModel').value.trim() || 'Custom AI Engine',
+          resolution: document.getElementById('formResolution').value.trim() || '4096 × 2160',
+          license: document.getElementById('formLicense').value.trim() || 'Commercial License',
+          status: document.getElementById('formStatus').value,
+          prompt: document.getElementById('formPrompt').value.trim(),
+          palette: palette.length > 0 ? palette : ['#1E3A8A', '#38BDF8', '#F1F5F9'],
+          aspectRatio: '16:9',
+          date: new Date().toISOString().split('T')[0]
+        };
+
+        if (assetId) {
+          // Update existing
+          const index = galleryAssets.findIndex(a => a.id === assetId);
+          if (index !== -1) {
+            galleryAssets[index] = { ...galleryAssets[index], ...newAssetObj };
+            showToast(`Asset "${title}" updated successfully!`, 'success');
+          }
+        } else {
+          // Add new asset to beginning
+          galleryAssets.unshift(newAssetObj);
+          showToast(`Asset "${title}" published to gallery!`, 'success');
+        }
+
+        // 1. Resilient local storage save
+        const savedLocally = saveAssetsToStorage();
+        if (!savedLocally) {
+          showToast('Warning: Local storage write failed, but proceeding with display.', 'warning');
+        }
+
+        closeAssetFormModal();
         renderCategoryTabs();
         renderGallery();
-        showToast(`Deleted "${asset.title}"`, 'info');
+
+        // 2. Cloud database synchronization wrapped with friendly feedback
+        try {
+          await pushAssetToCloud(assetId ? 'edit' : 'create', newAssetObj);
+        } catch (cloudErr) {
+          console.warn('[Cloud DB Save Error]', cloudErr);
+          showToast('Saved locally. Cloud sync encountered a temporary issue.', 'info');
+        }
+
+      } catch (submitErr) {
+        console.error('[Asset Publish Error]', submitErr);
+        showToast('An unexpected error occurred while publishing: ' + (submitErr.message || 'Please check form inputs.'), 'error');
       }
     }
 
-    function confirmResetCatalog() {
+    async function deleteAsset(assetId) {
       if (!isAdminLoggedIn) return;
-      const confirmReset = confirm('Reset gallery back to the curated 10-piece initial exhibition? Any custom assets added will be replaced.');
-      if (confirmReset) {
-        galleryAssets = [...INITIAL_SEED_ASSETS];
-        saveAssetsToStorage();
-        pushAssetToCloud('reset', null, galleryAssets);
-        renderCategoryTabs();
-        renderGallery();
-        showToast('Gallery restored to original curated catalog.', 'success');
+
+      try {
+        const asset = galleryAssets.find(a => a.id === assetId);
+        if (!asset) return;
+
+        const confirmDelete = confirm(`Are you sure you want to permanently delete "${asset.title}" from the gallery?`);
+        if (confirmDelete) {
+          galleryAssets = galleryAssets.filter(a => a.id !== assetId);
+          saveAssetsToStorage();
+          renderCategoryTabs();
+          renderGallery();
+          showToast(`Deleted "${asset.title}"`, 'info');
+
+          try {
+            await pushAssetToCloud('delete', assetId);
+          } catch (cloudErr) {
+            console.warn('[Cloud Delete Sync Error]', cloudErr);
+          }
+        }
+      } catch (err) {
+        console.error('[Delete Error]', err);
+        showToast('Could not delete asset: ' + (err.message || 'Unknown error'), 'error');
+      }
+    }
+
+    async function confirmResetCatalog() {
+      if (!isAdminLoggedIn) return;
+      try {
+        const confirmReset = confirm('Reset gallery back to the curated 10-piece initial exhibition? Any custom assets added will be replaced.');
+        if (confirmReset) {
+          galleryAssets = [...INITIAL_SEED_ASSETS];
+          saveAssetsToStorage();
+          renderCategoryTabs();
+          renderGallery();
+          showToast('Gallery restored to original curated catalog.', 'success');
+
+          try {
+            await pushAssetToCloud('reset', null);
+          } catch (cloudErr) {
+            console.warn('[Cloud Reset Sync Error]', cloudErr);
+          }
+        }
+      } catch (err) {
+        console.error('[Reset Error]', err);
+        showToast('Error resetting catalog: ' + (err.message || 'Unknown error'), 'error');
       }
     }
 

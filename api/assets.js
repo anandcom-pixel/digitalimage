@@ -358,8 +358,26 @@ export default async function handler(req, res) {
   if (req.method === 'POST' || req.method === 'PUT') {
     try {
       const body = await readBody(req);
-      const data = body.assets || body.data || body.asset;
+      const data = body.asset ? [body.asset] : (body.assets || body.data);
       const meta = body.meta || { action: body.action, id: body.id };
+
+      // Enforce lightweight payload validation to prevent Vercel 4.5MB request payload errors
+      if (data && Array.isArray(data)) {
+        for (const item of data) {
+          if (item && item.imageUrl) {
+            const urlStr = String(item.imageUrl).trim();
+            if (urlStr.startsWith('data:image/') || urlStr.length > 8192) {
+              res.setHeader('Content-Type', 'application/json');
+              res.statusCode = 400;
+              res.end(JSON.stringify({
+                success: false,
+                error: 'Payload size error: Base64 binary image uploads are disallowed to prevent Vercel 4.5MB payload limit errors. Please provide a direct HTTP/HTTPS Image URL (e.g. CDN, Imgur, GitHub raw link).'
+              }));
+              return;
+            }
+          }
+        }
+      }
 
       let existingRecords = globalThis._galleryAssetsStore || [...INITIAL_SEED_ASSETS];
 
